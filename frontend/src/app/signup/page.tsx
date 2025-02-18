@@ -48,7 +48,7 @@ export default function Login() {
     
           console.log("Registration successful:", response.data)
           localStorage.setItem("userToken", response.data.token)
-          router.push("/about-you") // Redirect after success
+          router.push("/home") // Redirect after success
         } catch (error) {
           console.error("Registration failed:", error)
           setError(error.response?.data?.message || "Registration failed, please try again.")
