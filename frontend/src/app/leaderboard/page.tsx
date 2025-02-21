@@ -20,27 +20,27 @@ export default function Leaderboard() {
           priority
         />
         <div className="w-50% h-50% relative flex-col justify-center items-center grid grid-cols-1">
-          <Link href="/home" className="relative p-2 col-span-1 text-2xl">
-            Home
+          <Link href="/home" className="relative p-2 col-span-1 text-2xl text-white">
+              Home
           </Link>
-          <Link href="/leaderboard" className="relative p-2 col-span-1 text-2xl ">
-            Leaderboard
+          <Link href="/leaderboard" className="relative p-2 col-span-1 text-2xl text-white">
+              Leaderboard
           </Link>
-          <Link href="/myteams" className="relative p-2 col-span-1 text-2xl ">
-            My Teams
+          <Link href="/myteams" className="relative p-2 col-span-1 text-2xl text-white">
+              My Teams
           </Link>
-          <Link href="/players" className="relative p-2 col-span-1 text-2xl ">
-            Players
+          <Link href="/players" className="relative p-2 col-span-1 text-2xl text-white">
+              Players
           </Link>
-          <Link href="/profile" className="relative p-2 col-span-1 text-2xl ">
-            Profile
+          <Link href="/profile" className="relative p-2 col-span-1 text-2xl text-white">
+              Profile
           </Link>
         </div>
-      </div>
+    </div>
 
       <div className="absolute right-0 flex justify-center items-start h-full w-[85%] space bg-purple-400 pt-20">
         <div className="relative w-[70%] h-[80%] bg-purple-700 rounded-lg border-8 border-white flex flex-col overflow-y-auto">
-        <div  className="grid grid-cols-12 items-center w-full py-2 border-b-4 border-white last:border-b-0">
+            <div  className="grid grid-cols-12 items-center w-full py-2 border-b-4 border-white last:border-b-0">
                 <p className="col-span-1 text-lg text-white text-center">Nr</p>
                 <p className="col-span-2 text-lg text-white text-center">User</p>
                 <p className="col-span-7 text-lg text-white text-center">Player</p>
@@ -60,4 +60,3 @@ export default function Leaderboard() {
     </div>
   )
 }
-

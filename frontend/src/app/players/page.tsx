@@ -27,20 +27,20 @@ export default function Players() {
           priority
         />
         <div className="w-50% h-50% relative flex-col justify-center items-center grid grid-cols-1">
-          <Link href="/home" className="relative p-2 col-span-1 text-2xl">
-            Home
+          <Link href="/home" className="relative p-2 col-span-1 text-2xl text-white">
+              Home
           </Link>
-          <Link href="/leaderboard" className="relative p-2 col-span-1 text-2xl ">
-            Leaderboard
+          <Link href="/leaderboard" className="relative p-2 col-span-1 text-2xl text-white">
+              Leaderboard
           </Link>
-          <Link href="/myteams" className="relative p-2 col-span-1 text-2xl ">
-            My Teams
+          <Link href="/myteams" className="relative p-2 col-span-1 text-2xl text-white">
+              My Teams
           </Link>
-          <Link href="/players" className="relative p-2 col-span-1 text-2xl ">
-            Players
+          <Link href="/players" className="relative p-2 col-span-1 text-2xl text-white">
+              Players
           </Link>
-          <Link href="/profile" className="relative p-2 col-span-1 text-2xl ">
-            Profile
+          <Link href="/profile" className="relative p-2 col-span-1 text-2xl text-white">
+              Profile
           </Link>
         </div>
       </div>
@@ -70,4 +70,3 @@ export default function Players() {
     </div>
   )
 }
-
