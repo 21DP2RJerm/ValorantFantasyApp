@@ -1,11 +1,25 @@
 "use client"
-
+import { useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { useState } from "react"
 
 export default function MyTeams() {
-  const [name, setName] = useState("")
+  const [players, setPlayers] = useState([])
+
+  useEffect(() => {
+      async function fetchPlayers() {
+        try {
+          const response = await fetch("http://127.0.0.1:8000/api/players")
+          const data = await response.json()
+          setPlayers(data)
+        } catch (error) {
+          console.error("Error fetching players:", error)
+        }
+      }
+  
+      fetchPlayers()
+    }, [])
+
 
   return (
     <div className="relative flex justify-center h-screen w-screen space bg-purple-900 ">
@@ -90,23 +104,27 @@ export default function MyTeams() {
               </div>
             </div>
             <div className="flex flex-wrap justify-center p-6 gap-4">
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((index) => (
+            {players.length > 0 ? (
+              players.map((player, index) => (
                 <div
                   key={index}
                   className="flex flex-col items-center justify-center border-4 border-white rounded-lg w-[13%] aspect-square transition-transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white"
                 >
                   <Image
-                    src="/jamppi.png"
-                    alt="Logo"
+                    src={player.logo}
+                    alt={player.logo}
                     width={80}
                     height={80}
                     style={{ objectFit: "contain" }}
                     className="rounded-full border-4 border-white mb-2 mt-4"
                   />
-                  <p className="text-lg text-white text-center">Jamppi</p>
+                  <p className="text-lg text-white text-center">{player.in_game_name}</p>
                   <p className="text-lg text-white text-center mb-2">Initiator</p>
                 </div>
-              ))}
+              ))
+            ) : (
+              <p className="text-white text-lg">Loading teams...</p>
+            )}
             </div>
           </div>
         </div>

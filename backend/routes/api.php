@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TeamController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
@@ -11,3 +12,5 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 Route::post('/register', [RegisteredUserController::class, 'store'])
     ->middleware('guest')
     ->name('register');
+Route::get('/teams', [TeamController::class, 'getTeams']);
+Route::get('/players', [TeamController::class, 'getPlayers']);
