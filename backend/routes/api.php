@@ -14,3 +14,4 @@ Route::post('/register', [RegisteredUserController::class, 'store'])
     ->name('register');
 Route::get('/teams', [TeamController::class, 'getTeams']);
 Route::get('/players', [TeamController::class, 'getPlayers']);
+Route::post('/createTeam', [TeamController::class, 'createTeam']);

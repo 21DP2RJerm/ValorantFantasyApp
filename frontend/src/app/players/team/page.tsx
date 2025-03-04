@@ -17,19 +17,19 @@ export default function Team() {
           priority
         />
         <div className="w-50% h-50% relative flex-col justify-center items-center grid grid-cols-1">
-          <Link href="/home" className="relative p-2 col-span-1 text-2xl">
+          <Link href="/home" className="relative p-2 col-span-1 text-2xl text-white">
             Home
           </Link>
-          <Link href="/leaderboard" className="relative p-2 col-span-1 text-2xl ">
+          <Link href="/leaderboard" className="relative p-2 col-span-1 text-2xl  text-white">
             Leaderboard
           </Link>
-          <Link href="/myteams" className="relative p-2 col-span-1 text-2xl ">
+          <Link href="/myteams" className="relative p-2 col-span-1 text-2xl  text-white">
             My Teams
           </Link>
-          <Link href="/players" className="relative p-2 col-span-1 text-2xl ">
+          <Link href="/players" className="relative p-2 col-span-1 text-2xl  text-white">
             Players
           </Link>
-          <Link href="/profile" className="relative p-2 col-span-1 text-2xl ">
+          <Link href="/profile" className="relative p-2 col-span-1 text-2xl text-white">
             Profile
           </Link>
         </div>

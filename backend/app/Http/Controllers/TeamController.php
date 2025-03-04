@@ -30,4 +30,24 @@ class TeamController extends Controller
         });
         return response()->json($players);
     }
+
+    public function createTeam(Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+            'region' => 'required',
+            'logo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+    
+        $imageName = time() . '.' . $request->file('logo')->extension(); 
+        $request->file('logo')->move(public_path('storage/teams'), $imageName);
+    
+        $team = new Teams();
+        $team->name = $request->name;
+        $team->region = $request->region;
+        $team->logo = $imageName;
+        $team->save();
+    
+        return response()->json($team);
+    }
 }
