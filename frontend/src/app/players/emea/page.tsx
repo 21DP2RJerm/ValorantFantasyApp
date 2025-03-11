@@ -20,6 +20,16 @@ export default function EMEA() {
     fetchTeams()
   }, [])
 
+  async function handleClick(teamId) {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/getTeamInfo/${teamId}`)
+      const data = await response.json()
+      console.log("Team Data:", data) // Log the response in the console
+    } catch (error) {
+      console.error("Error fetching team details:", error)
+    }
+  }
+
   return (
     <div className="relative flex justify-center h-screen w-screen space bg-purple-900">
       {/* Sidebar */}
@@ -60,15 +70,16 @@ export default function EMEA() {
             <Link href="/create-team" className="bg-white py-2 rounded-md hover:bg-slate-300 transition-colors text-purple-500 mt-1 px-4">
               Create team
             </Link>
-            <button className="bg-white py-2 rounded-md hover:bg-slate-300 transition-colors text-purple-500 mt-1 px-4">
-              Create Player
-            </button>
+            <Link href="/create-player" className="bg-white py-2 rounded-md hover:bg-slate-300 transition-colors text-purple-500 mt-1 px-4">
+              Create player
+            </Link>
           </div>
           <div className="flex flex-wrap justify-center p-6 gap-4">
             {teams.length > 0 ? (
               teams.map((team, index) => (
                 <Link
-                  href={`/team/${team.name}`}
+                  href={`/players/${index+1}`}
+                  onClick={() => handleClick((index+1))}
                   key={index}
                   className="flex flex-col items-center justify-center border-4 border-white rounded-lg w-[20%] aspect-square transition-transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white"
                 >
