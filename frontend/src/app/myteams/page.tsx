@@ -4,7 +4,8 @@ import Image from "next/image"
 import Link from "next/link"
 
 export default function MyTeams() {
-  const [players, setPlayers] = useState([])
+  const [players, setPlayers] = useState([]);
+  const [search, setSearch] = useState("")
 
   useEffect(() => {
       async function fetchPlayers() {
@@ -20,7 +21,7 @@ export default function MyTeams() {
       fetchPlayers()
     }, [])
 
-
+    const filteredPlayers = players.filter((player) => player.in_game_name.toLowerCase().includes(search.toLowerCase()))
   return (
     <div className="relative flex justify-center h-screen w-screen space bg-purple-900 ">
       <div className="absolute bg-purple-700 h-screen w-[15%] left-0 flex justify-center items-center border-r-8 border-white">
@@ -79,8 +80,8 @@ export default function MyTeams() {
                 type="text"
                 name="name"
                 placeholder="Search for player"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
                 className="h-12 w-64 rounded-lg p-4 text-zinc-950"
                 required
               />
@@ -104,27 +105,27 @@ export default function MyTeams() {
               </div>
             </div>
             <div className="flex flex-wrap justify-center p-6 gap-4">
-            {players.length > 0 ? (
-              players.map((player, index) => (
-                <div
-                  key={index}
-                  className="flex flex-col items-center justify-center border-4 border-white rounded-lg w-[13%] aspect-square transition-transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white"
-                >
-                  <Image
-                    src={player.logo}
-                    alt={player.logo}
-                    width={80}
-                    height={80}
-                    style={{ objectFit: "contain" }}
-                    className="rounded-full border-4 border-white mb-2 mt-4"
-                  />
-                  <p className="text-lg text-white text-center">{player.in_game_name}</p>
-                  <p className="text-lg text-white text-center mb-2">Initiator</p>
-                </div>
-              ))
-            ) : (
-              <p className="text-white text-lg">Loading teams...</p>
-            )}
+              {filteredPlayers.length > 0 ? (
+                filteredPlayers.map((player, index) => (
+                  <div
+                    key={index}
+                    className="flex flex-col items-center justify-center border-4 border-white rounded-lg w-[13%] aspect-square transition-transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white"
+                  >
+                    <Image
+                      src={player.logo || "/placeholder.svg"}
+                      alt={player.logo}
+                      width={80}
+                      height={80}
+                      style={{ objectFit: "contain" }}
+                      className="rounded-full border-4 border-white mb-2 mt-4"
+                    />
+                    <p className="text-lg text-white text-center">{player.in_game_name}</p>
+                    <p className="text-lg text-white text-center mb-2">Initiator</p>
+                  </div>
+                ))
+              ) : (
+                <p className="text-white text-lg">No players found</p>
+              )}
             </div>
           </div>
         </div>

@@ -58,17 +58,19 @@ class TeamController extends Controller
             'last_name' => 'required',
             'in_game_name' => 'required',
             'team_id' => 'required',
-            'logo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'logo' => 'required|image|mimes:jpeg,png,jpg,gif',
         ]);
     
-        $imagePath = $request->file('logo')->store('players', 'public');
+        $imageName = time() . '.' . $request->file('logo')->extension(); 
+        $request->file('logo')->move(public_path('storage/players'), $imageName);
     
         $player = new Players();
         $player->name = $request->name;
         $player->last_name = $request->last_name;
         $player->in_game_name = $request->in_game_name;
         $player->team_id = $request->team_id;
-        $player->logo = $imagePath;
+        $player->logo = $imageName;
+        $player->points = 0;
         $player->save();
     
         return response()->json($player);

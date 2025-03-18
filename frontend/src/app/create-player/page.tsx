@@ -48,11 +48,8 @@ export default function CreateTeam() {
             const text = await response.text(); // Read response as text
             console.log("Raw Response:", text); // Log response before JSON parsing
     
-            const data = JSON.parse(text); // Manually parse JSON
-            console.log("Parsed JSON:", data);
-    
             alert("Player created successfully!");
-            router.push("/myteams");
+            
         } catch (error) {
             console.error("Error:", error);
             alert("Failed to create player.");

@@ -81,25 +81,25 @@ export default function Team() {
           <div className="flex-grow border-t-4 border-white rounded-b-lg">
             <div className="flex items-center justify-center p-6 h-full gap-4">
               {players.length > 0 ? (
-                players.map((player) => (
+                players.map((player, index) => (
                   <div
-                    key={player.id}
-                    className="flex flex-col items-center justify-center border-4 border-white rounded-lg w-[16%] h-full mx-3"
+                    key={index}
+                    className="flex flex-col items-center justify-center border-4 border-white rounded-lg w-[13%] aspect-square transition-transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white"
                   >
                     <Image
-                      src={`/${player.logo}`}  // Dynamically load player logo
-                      alt={player.in_game_name}
-                      width={130}
-                      height={130}
+                      src={`http://127.0.0.1:8000/storage/players/${player.logo}`}
+                      alt={player.in_game_name || "Player image"}
+                      width={80}
+                      height={80}
                       style={{ objectFit: "contain" }}
-                      className="rounded-full border-4 border-white mb-2"
+                      className="rounded-full border-4 border-white mb-2 mt-4"
                     />
-                    <p className="text-2xl text-white text-center">{player.in_game_name}</p>
-                    <p className="text-lg text-white text-center">{player.last_name}</p>
+                    <p className="text-lg text-white text-center">{player.in_game_name}</p>
+                    <p className="text-lg text-white text-center mb-2">Initiator</p>
                   </div>
                 ))
               ) : (
-                <p className="text-white text-xl">No players found</p>
+                <p className="text-white text-lg">Loading teams...</p>
               )}
             </div>
           </div>
