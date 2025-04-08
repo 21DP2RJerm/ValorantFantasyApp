@@ -45,4 +45,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function fantasyTeams()
+    {
+        return $this->hasMany(FantasyTeam::class);
+    }
 }

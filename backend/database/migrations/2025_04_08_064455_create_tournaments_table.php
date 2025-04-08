@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('players', function (Blueprint $table) {
+        Schema::create('tournaments', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('last_name');
-            $table->string('in_game_name');
-            $table->string('points');
-            $table->integer('team_id');
-            $table->string('logo');
+            $table->string('type');
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->string('location');
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('players');
+        Schema::dropIfExists('tournaments');
     }
 };
