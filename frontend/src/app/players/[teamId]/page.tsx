@@ -64,8 +64,8 @@ export default function Team() {
           <div className="flex items-center p-6">
             <div className="flex-shrink-0">
               <Image
-                src={`/${team.logo}`}  // Dynamically load team logo
-                alt={team.name}
+                src={`http://127.0.0.1:8000/storage/teams/${team.logo}`}  // Dynamically load team logo
+                alt={team.name || "Team"}
                 width={200}
                 height={200}
                 style={{ objectFit: "contain" }}
