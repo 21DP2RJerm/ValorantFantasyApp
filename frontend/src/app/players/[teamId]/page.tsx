@@ -99,7 +99,7 @@ export default function Team() {
                   </div>
                 ))
               ) : (
-                <p className="text-white text-lg">Loading teams...</p>
+                <p className="text-white text-lg">Loading players...</p>
               )}
             </div>
           </div>

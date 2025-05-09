@@ -76,32 +76,14 @@ export default function MyTeams() {
             <span className="text-white text-2xl font-bold">VCT EMEA</span>
           </div>
         </a>
-
-        {/* Add New Team Box */}
-        <div className="relative w-[90%] h-[150px] bg-purple-700 rounded-lg border-8 border-white flex flex-row">
-          {/* Region Dropdown */}
-          <div className="w-[30%] flex items-center justify-center border-r-4 border-white">
-            <div className="w-[80%]">
-              <select
-                className="w-full bg-purple-600 text-white border-2 border-white p-2 rounded-md"
-                value={selectedRegion}
-                onChange={(e) => setSelectedRegion(e.target.value)}
-              >
-                {regions.map((region) => (
-                  <option key={region} value={region}>
-                    {region}
-                  </option>
-                ))}
-              </select>
-            </div>
+          <div className="relative w-[90%] h-[150px] bg-purple-700 rounded-lg border-8 border-white flex flex-row">
+            <Link href="/myteams/createFantasyTeam" className="w-full flex flex-col items-center justify-center">
+              <div className="w-full flex flex-col items-center justify-center cursor-pointer">
+                <div className="text-white text-5xl font-bold mb-2">+</div>
+                <span className="text-white text-xl font-bold">Add New Team</span>
+              </div>
+            </Link>
           </div>
-
-          {/* Add Team Button */}
-          <div className="w-[70%] flex flex-col items-center justify-center cursor-pointer">
-            <div className="text-white text-5xl font-bold mb-2">+</div>
-            <span className="text-white text-xl font-bold">Add New Team</span>
-          </div>
-        </div>
       </div>
     </div>
   )

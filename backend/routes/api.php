@@ -5,8 +5,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\ResultController;
 use App\Http\Controllers\TournamentController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\FantasyTeamController;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
@@ -15,6 +18,7 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 Route::post('/register', [RegisteredUserController::class, 'store'])
     ->middleware('guest')
     ->name('register');
+Route::middleware('auth:sanctum')->get('/profile', [AuthController::class, 'profile']);
 Route::get('/teams', [TeamController::class, 'getTeams']);
 Route::get('/players', [TeamController::class, 'getPlayers']);
 Route::get('/getTeamInfo/{teamId}', [TeamController::class, 'getTeamInfo']);
@@ -23,6 +27,7 @@ Route::post('/createPlayer', [TeamController::class, 'createPlayer']);
 //tournaments
 Route::post('/createTournament', [TournamentController::class, 'createTournament']);
 Route::get('/getTournaments', [TournamentController::class, 'getTournaments']);
+Route::get('/getUnstartedTournaments', [TournamentController::class, 'getUnstartedTournaments']);
 Route::get('/getTournamentInfo/{tournamentId}', [TournamentController::class, 'getTournamentInfo']);
 //fantasy team
 
@@ -51,3 +56,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 //fantasy teams
+Route::middleware('auth:sanctum')->post('/createFantasyTeam', [FantasyTeamController::class, 'createFantasyTeam']);
+Route::middleware('auth:sanctum')->get('/getUserFantasyTeams', [FantasyTeamController::class, 'getUserFantasyTeams']);

@@ -11,4 +11,9 @@ class Tournaments extends Model
         return $this->hasMany(FantasyTeam::class);
     }
 
+    public function tournamentTeams()
+    {
+        return $this->hasMany(TournamentTeam::class);
+    }
+
 }

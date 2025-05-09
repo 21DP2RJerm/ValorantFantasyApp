@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Tournaments;
 class TournamentController extends Controller
@@ -30,6 +31,12 @@ class TournamentController extends Controller
     public function getTournaments()
     {
         $tournaments = Tournaments::all();
+        return response()->json($tournaments);
+    }
+
+    public function getUnstartedTournaments()
+    {
+        $tournaments = Tournaments::where('start_date', '>', Carbon::now())->get();
         return response()->json($tournaments);
     }
     public function getTournamentInfo($tournamentId)

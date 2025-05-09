@@ -26,10 +26,7 @@ export default function Login() {
         setError("")
     
         try {
-          // Step 1: Fetch CSRF Cookie
-          await api.get("http://127.0.0.1:8000/sanctum/csrf-cookie")
-    
-          // Step 2: Send Registration Request
+
           const response = await api.post(
             "http://127.0.0.1:8000/api/register",
             {

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Teams;
 use App\Models\Players;
+use App\Models\Tournaments;
+use App\Models\TournamentTeam;
 
 class TeamController extends Controller
 {
@@ -20,14 +22,30 @@ class TeamController extends Controller
         return response()->json($teams);
     }
 
-    public function getPlayers()
+    public function getPlayers(Request $request)
     {
-        $players = Players::all()->map(function ($player) {
+        $tournamentId = $request->query('tournament_id');
+    
+        if ($tournamentId) {
+            $teams = TournamentTeam::where('tournament_id', $tournamentId)->pluck('team_id');
+
+            $players = Players::whereIn('team_id', $teams)->get();
+        } else {
+            $players = Players::all();
+        }
+    
+        $players = $players->map(function ($player) {
+            $team = Teams::find($player->team_id);
+    
             return [
+                'player_id' => $player->id,
                 'in_game_name' => $player->in_game_name,
                 'logo' => asset("storage/players/{$player->logo}"),
+                'team' => $team->id,
+                'team_logo' => asset("storage/teams/{$team->logo}")
             ];
         });
+    
         return response()->json($players);
     }
 

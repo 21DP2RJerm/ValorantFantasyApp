@@ -2,8 +2,35 @@
 
 import Image from "next/image"
 import Link from "next/link"
+import { useEffect, useState } from 'react';
+import api from 'axios';
 
 export default function Profile() {
+  const [profile, setProfile] = useState({  user: { name: '', email: '' }});
+  useEffect(() => {
+      const fetchProfile = async () => {
+          try {
+              const token = localStorage.getItem('userToken');
+              console.log(token);
+              if (token) {
+                  const response = await api.get('http://localhost:8000/api/profile', {
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                      Accept: "application/json",
+                  },
+                  });
+                  setProfile(response.data.data);
+
+              } 
+          } 
+          catch (error) {
+            console.error("Registration failed:", error)
+          }
+      };
+
+      fetchProfile();
+  }, []);
+  
   return (
     <div className="relative flex justify-center h-screen w-screen space bg-purple-900 ">
       <div className="absolute bg-purple-700 h-screen w-[15%] left-0 flex justify-center items-center border-r-8 border-white">
@@ -49,8 +76,8 @@ export default function Profile() {
               />
             </div>
             <div className="flex-grow ml-8">
-              <div className="text-4xl text-white mb-2">Jertix</div>
-              <div className="text-2xl text-white">raitis@gmail.com</div>
+              <div className="text-4xl text-white mb-2">{profile.user.name}</div>
+              <div className="text-2xl text-white">{profile.user.email}</div>
             </div>
           </div>
           <div className="flex-grow border-t-4 border-white rounded-b-lg">

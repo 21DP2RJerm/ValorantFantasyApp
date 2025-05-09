@@ -4,6 +4,8 @@ import Image from "next/image"
 import React, { useState } from 'react';
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
+import api from 'axios';
+
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -11,6 +13,34 @@ export default function Login() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);  // New loading state
     const router = useRouter();
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault()
+        setError("")
+    
+        try {
+
+          const response = await api.post(
+            "http://127.0.0.1:8000/api/login",
+            {
+              email: email.toLowerCase(),
+              password,
+            },
+            {
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+            },
+          )
+    
+          console.log("Login successful:", response.data)
+          localStorage.setItem("userToken", response.data.token)
+          router.push("/home") // Redirect after success
+        } catch (error) {
+          console.error("Login failed:", error)
+          setError(error.response?.data?.message || "Login failed, please try again.")
+        }
+      }
     return (
         <div className="relative flex justify-center items-center h-screen w-screen">
             <Image
@@ -22,7 +52,7 @@ export default function Login() {
                 priority
             />
 
-            <form className="flex flex-col items-center z-1 relative bg-purple-500 p-10 rounded-lg">
+            <form className="flex flex-col items-center z-1 relative bg-purple-500 p-10 rounded-lg "onSubmit={handleLogin}>
                 <Image
                         alt="Logo"
                         width={100}
