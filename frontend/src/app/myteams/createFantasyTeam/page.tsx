@@ -21,6 +21,7 @@ export default function FantasyTeamId() {
 
   async function createFantasyTeam(){
     try {
+      console.log(teamPlayers);
       const playerIds = teamPlayers.map(player => player?.player_id);
       const token = localStorage.getItem('userToken');
       const response = await api.post(
@@ -249,16 +250,16 @@ export default function FantasyTeamId() {
                     key={index}
                     className={`flex flex-col items-center justify-center border-4 ${
                       isPlayerOnTeam(player) ? "border-green-400" : "border-gray-300"
-                    } rounded-lg cursor-pointer w-[13%] aspect-square transition-transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white`}
+                    } rounded-lg cursor-pointer w-[10%] aspect-square transition-transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white`}
                     onClick={() => handlePlayerClick(player)}
                   >
                     <Image
                       src={player.logo || "/placeholder.svg"}
                       alt={player.logo || "Player logo"}
-                      width={80}
-                      height={80}
+                      width={100}
+                      height={100}
                       style={{ objectFit: "contain" }}
-                      className="rounded-full border-4 border-white mb-2 mt-4"
+                      className="rounded-full border-4 border-white"
                     />
                     <p className="text-lg text-white text-center">{player.in_game_name}</p>
                   </div>

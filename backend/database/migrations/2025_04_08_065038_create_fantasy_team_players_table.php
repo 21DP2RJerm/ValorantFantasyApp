@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('fantasy_team_id');
             $table->integer('player_id');
+            $table->string('role');
             $table->timestamps();
         });
     }

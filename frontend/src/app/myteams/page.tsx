@@ -3,31 +3,58 @@ import { useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 
+// Define types for our data
+interface Player {
+  player_id: number
+  in_game_name: string
+  logo: string
+  team_logo: string
+}
+
+interface FantasyTeam {
+  fantasy_team_id: number
+  tournament_id: number
+  tournament_name?: string // This might need to be fetched separately
+  players: Player[]
+}
+
 export default function MyTeams() {
-  const [players, setPlayers] = useState([])
-  const [search, setSearch] = useState("")
-  const [regions, setRegions] = useState(["VCT EMEA", "VCT Americas", "VCT Pacific", "VCT China"])
-  const [selectedRegion, setSelectedRegion] = useState("VCT EMEA")
+  const [teams, setTeams] = useState<FantasyTeam[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
 
   useEffect(() => {
-    async function fetchPlayers() {
+    async function fetchTeams() {
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/players")
+        const token = localStorage.getItem('userToken');
+        const response = await fetch("http://127.0.0.1:8000/api/getUserFantasyTeams", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        })
+        
+        if (!response.ok) {
+          throw new Error("Failed to fetch teams")
+        }
+        
         const data = await response.json()
-        setPlayers(data)
+        console.log(data)
+        setTeams(data)
       } catch (error) {
-        console.error("Error fetching players:", error)
+        console.error("Error fetching teams:", error)
+        setError("Failed to load your teams")
+      } finally {
+        setLoading(false)
       }
     }
 
-    fetchPlayers()
+    fetchTeams()
   }, [])
-
-  const filteredPlayers = players.filter((player) => player.in_game_name?.toLowerCase().includes(search.toLowerCase()))
 
   return (
     <div className="relative flex justify-center h-screen w-screen space bg-purple-900 ">
-      <div className="absolute bg-purple-700 h-screen w-[15%] left-0 flex justify-center items-center border-r-8 border-white">
+      <div className="absolute bg-purple-900 h-screen w-[15%] left-0 flex justify-center items-center border-r-8 border-white">
         <Image
           alt="Logo"
           width={200}
@@ -56,34 +83,69 @@ export default function MyTeams() {
         </div>
       </div>
 
-      <div className="absolute right-0 flex flex-col items-center h-full w-[85%] space bg-purple-400 pt-20">
-        {/* Team Display Box */}
-        <a href="/myteams/fantasyTeamId" className="relative w-[90%] h-[150px] bg-purple-700 rounded-lg border-8 border-white flex flex-row mb-6">
-          {/* Players Row */}
-          <div className="flex items-center justify-start p-6 h-full w-[80%]">
-            {[1, 2, 3, 4, 5].map((index) => (
-              <div
-                key={index}
-                className="flex flex-col items-center justify-center border-4 border-white rounded-lg w-[120px] h-[110px] mx-2"
-              >
-                <Image src="/jamppi.png" alt="Player" width={100} height={100} style={{ objectFit: "contain" }} />
-              </div>
-            ))}
-          </div>
+      <div className="absolute right-0 flex flex-col items-center h-full w-[85%] space bg-gray-800 pt-20">
+        {/* Team Count */}
+        <div className="w-[90%] mb-4">
+          <h2 className="text-white text-2xl font-bold">
+            My Teams ({teams.length})
+          </h2>
+        </div>
 
-          {/* Region Text */}
-          <div className="w-[20%] flex items-center justify-center">
-            <span className="text-white text-2xl font-bold">VCT EMEA</span>
-          </div>
-        </a>
-          <div className="relative w-[90%] h-[150px] bg-purple-700 rounded-lg border-8 border-white flex flex-row">
-            <Link href="/myteams/createFantasyTeam" className="w-full flex flex-col items-center justify-center">
-              <div className="w-full flex flex-col items-center justify-center cursor-pointer">
-                <div className="text-white text-5xl font-bold mb-2">+</div>
-                <span className="text-white text-xl font-bold">Add New Team</span>
-              </div>
-            </Link>
-          </div>
+        {loading ? (
+          <div className="text-white text-xl">Loading your teams...</div>
+        ) : error ? (
+          <div className="text-red-200 text-xl">{error}</div>
+        ) : (
+          <>
+            {/* Team Display Boxes */}
+            {teams.map((team) => (
+              <Link 
+                href={`/myteams/${team.fantasy_team_id}`} 
+                key={team.fantasy_team_id}
+                className="relative w-[90%] h-[150px] bg-purple-900 rounded-lg border-8 border-white flex flex-row mb-6"
+              >
+                {/* Players Row */}
+                <div className="flex items-center justify-start p-6 h-full w-[80%]">
+                  {team.players.map((player, index) => (
+                    <div
+                      key={index}
+                      className="flex flex-col items-center justify-center border-4 border-white rounded-lg w-[105px] h-[105px] mx-2"
+                    >
+                      <Image 
+                        src={player.logo || "/placeholder.svg"} 
+                        alt={player.in_game_name} 
+                        width={100} 
+                        height={100} 
+                        style={{ objectFit: "contain" }} 
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                {/* Tournament Info */}
+                <div className="w-[35%] flex items-center justify-center">
+                  <p className="text-white text-2xl font-bold pr-10">
+                    Points:
+                    {team.points || `0`}
+                  </p>
+                  <p className="text-white text-2xl font-bold">
+                    {team.tournament_name || `Tournament ${team.tournament_id}`}
+                  </p>
+                </div>
+              </Link>
+            ))}
+
+            {/* Add New Team Button */}
+            <div className="relative w-[90%] h-[150px] bg-purple-900 rounded-lg border-8 border-white flex flex-row">
+              <Link href="/myteams/createFantasyTeam" className="w-full flex flex-col items-center justify-center">
+                <div className="w-full flex flex-col items-center justify-center cursor-pointer">
+                  <div className="text-white text-5xl font-bold mb-2">+</div>
+                  <span className="text-white text-xl font-bold">Add New Team</span>
+                </div>
+              </Link>
+            </div>
+          </>
+        )}
       </div>
     </div>
   )

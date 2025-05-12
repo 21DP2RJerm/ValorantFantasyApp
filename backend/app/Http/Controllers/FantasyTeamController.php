@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\FantasyTeam;
 use App\Models\FantasyTeamPlayers;
 use App\Models\Players;
+use App\Models\Tournaments;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,11 +20,30 @@ class FantasyTeamController extends Controller
         'players' => 'required|array|size:5', 
     ]);
     
+    $roles = ["Duelist", "Controller", "Initiator", "Sentinel", "Flex"];
+
     if(FantasyTeam::where('tournament_id', $request->tournament_id)
         ->where('user_id', $user->id)
         ->exists())
     {
         return response()->json("Fantasy team for this tournament already exists");
+    }
+    $teamCounts = [];
+
+    foreach ($request->players as $playerId) {
+        $player = Players::find($playerId);
+
+        $teamId = $player->team_id;
+
+        if (!isset($teamCounts[$teamId])) {
+            $teamCounts[$teamId] = 0;
+        }
+
+        $teamCounts[$teamId]++;
+
+        if ($teamCounts[$teamId] > 2) {
+            return response()->json("You cannot select more than 2 players from the same team");
+        }
     }
     $fantasyTeam = new FantasyTeam();
     $fantasyTeam->user_id = $user->id;
@@ -31,11 +51,14 @@ class FantasyTeamController extends Controller
     $fantasyTeam->points = 0;
     $fantasyTeam->save();
 
+    $i = 0;
     foreach ($request->players as $playerId) {
         $fantasyTeamPlayer = new FantasyTeamPlayers();
         $fantasyTeamPlayer->fantasy_team_id = $fantasyTeam->id;
         $fantasyTeamPlayer->player_id = $playerId;
+        $fantasyTeamPlayer->role = $roles[$i];
         $fantasyTeamPlayer->save();
+        $i = $i + 1;
     }
 
     return response()->json("Fantasy team created");
@@ -46,14 +69,14 @@ class FantasyTeamController extends Controller
         $user = Auth::user();
 
         $fantasyTeams = FantasyTeam::where('user_id', $user->id)->get();
-
+        
         if ($fantasyTeams->isEmpty()) {
             return response()->json("No teams");
         }
 
         $fantasyTeams = $fantasyTeams->map(function ($fantasyTeam) {
             $FantasyPlayers = FantasyTeamPlayers::where('fantasy_team_id', $fantasyTeam->id)->get();
-
+            $tournament = Tournaments::find($fantasyTeam->tournament_id);
             $FantasyPlayers = $FantasyPlayers->map(function ($FantasyPlayer) {
                 $player = Players::find($FantasyPlayer->player_id);
 
@@ -70,6 +93,8 @@ class FantasyTeamController extends Controller
             return [
                 'fantasy_team_id' => $fantasyTeam->id,
                 'tournament_id' => $fantasyTeam->tournament_id,
+                'points' => $fantasyTeam->points,
+                'tournament_name' => $tournament->name,
                 'players' => $FantasyPlayers,
             ];
         });

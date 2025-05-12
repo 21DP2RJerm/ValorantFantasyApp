@@ -6,29 +6,25 @@ import Link from "next/link"
 export default function EMEA() {
   const [teams, setTeams] = useState([])
 
+  const [region, setRegion] = useState('EMEA') 
+
   useEffect(() => {
     async function fetchTeams() {
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/teams")
+        const response = await fetch(`http://127.0.0.1:8000/api/teams/${region}`)
         const data = await response.json()
         setTeams(data)
+        console.log(data)
       } catch (error) {
         console.error("Error fetching teams:", error)
       }
     }
 
-    fetchTeams()
-  }, [])
-
-  async function handleClick(teamId) {
-    try {
-      const response = await fetch(`http://127.0.0.1:8000/api/getTeamInfo/${teamId}`)
-      const data = await response.json()
-      console.log("Team Data:", data) // Log the response in the console
-    } catch (error) {
-      console.error("Error fetching team details:", error)
+    if (region) {
+      fetchTeams()
     }
-  }
+  }, [region])
+
 
   return (
     <div className="relative flex justify-center h-screen w-screen space bg-purple-900">
@@ -78,8 +74,7 @@ export default function EMEA() {
             {teams.length > 0 ? (
               teams.map((team, index) => (
                 <Link
-                  href={`/players/${index+1}`}
-                  onClick={() => handleClick((index+1))}
+                  href={`/players/${team.id}`}
                   key={index}
                   className="flex flex-col items-center justify-center border-4 border-white rounded-lg w-[20%] aspect-square transition-transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white"
                 >

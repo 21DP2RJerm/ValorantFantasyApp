@@ -2,22 +2,41 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 export default function Americas() {
-  const [name, setName] = useState("")
+  const [teams, setTeams] = useState([])
 
-  // Sample data for top players
-  const topPlayers = [
-    { name: "Jamppi", kills: 57, deaths: 53, assists: 23, points: 426 },
-    { name: "ScreaM", kills: 55, deaths: 48, assists: 20, points: 415 },
-    { name: "nAts", kills: 52, deaths: 45, assists: 25, points: 410 },
-    { name: "cNed", kills: 50, deaths: 47, assists: 22, points: 405 },
-    { name: "Derke", kills: 49, deaths: 46, assists: 21, points: 400 },
-  ]
+  const [region, setRegion] = useState('Americas') 
+
+  useEffect(() => {
+    async function fetchTeams() {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/api/teams/${region}`)
+        const data = await response.json()
+        setTeams(data)
+      } catch (error) {
+        console.error("Error fetching teams:", error)
+      }
+    }
+
+    fetchTeams()
+
+  }, [region])
+
+  async function handleClick(teamId) {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/getTeamInfo/${teamId}`)
+      const data = await response.json()
+      console.log("Team Data:", data) // Log the response in the console
+    } catch (error) {
+      console.error("Error fetching team details:", error)
+    }
+  }
 
   return (
     <div className="relative flex justify-center h-screen w-screen space bg-purple-900">
+      {/* Sidebar */}
       <div className="absolute bg-purple-700 h-screen w-[15%] left-0 flex justify-center items-center border-r-8 border-white">
         <Image
           alt="Logo"
@@ -47,57 +66,41 @@ export default function Americas() {
         </div>
       </div>
 
+      {/* Main Content */}
       <div className="absolute right-0 flex justify-between items-start h-full w-[85%] space-x-4 bg-purple-400 pt-20 px-4">
         <div className="w-[85%] bg-purple-700 rounded-lg border-8 border-white flex flex-col overflow-y-auto">
           <h2 className="text-2xl text-white font-bold text-center py-4">Teams</h2>
+          <div className="flex space-x-4 px-6 items-center justify-center">
+            <Link href="/create-team" className="bg-white py-2 rounded-md hover:bg-slate-300 transition-colors text-purple-500 mt-1 px-4">
+              Create team
+            </Link>
+            <Link href="/create-player" className="bg-white py-2 rounded-md hover:bg-slate-300 transition-colors text-purple-500 mt-1 px-4">
+              Create player
+            </Link>
+          </div>
           <div className="flex flex-wrap justify-center p-6 gap-4">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((index) => (
-              <Link
-                href={'/team'}
-                key={index}
-                className="flex flex-col items-center justify-center border-4 border-white rounded-lg w-[20%] aspect-square transition-transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white"
-              >
-                <Image
-                  src="/TL.png"
-                  alt="Team Logo"
-                  width={140}
-                  height={140}
-                  style={{ objectFit: "contain" }}
-                  className="rounded-full mb-2 mt-4"
-                />
-                <p className="text-lg text-white text-center">Team Liquid</p>
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        <div className="w-[25%] bg-purple-700 rounded-lg border-8 border-white flex flex-col">
-          <h2 className="text-2xl text-white font-bold text-center py-4">Top Players of the Week</h2>
-          <div className="grid grid-cols-8 items-center w-full py-2 border-b-4 border-white">
-            <p className="col-span-3 text-sm text-white text-center">Player</p>
-            <p className="col-span-1 text-sm text-white text-center">K</p>
-            <p className="col-span-1 text-sm text-white text-center">D</p>
-            <p className="col-span-1 text-sm text-white text-center">A</p>
-            <p className="col-span-2 text-sm text-white text-center">Points</p>
-          </div>
-          <div className="overflow-y-auto">
-            {topPlayers.map((player, index) => (
-              <div
-                key={index}
-                className="grid grid-cols-8 items-center w-full py-2 border-b border-white last:border-b-0"
-              >
+            {teams.length > 0 ? (
+              teams.map((team, index) => (
                 <Link
-                  href={`/players/profile`}
-                  className="col-span-3 text-sm text-white text-center hover:underline"
+                  href={`/players/${index+1}`}
+                  onClick={() => handleClick((index+1))}
+                  key={index}
+                  className="flex flex-col items-center justify-center border-4 border-white rounded-lg w-[20%] aspect-square transition-transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white"
                 >
-                  {player.name}
+                  <Image
+                    src={team.logo}
+                    alt={team.name}
+                    width={140}
+                    height={140}
+                    style={{ objectFit: "contain" }}
+                    className=" mb-2 mt-4"
+                  />
+                  <p className="text-lg text-white text-center">{team.name}</p>
                 </Link>
-                <p className="col-span-1 text-sm text-white text-center">{player.kills}</p>
-                <p className="col-span-1 text-sm text-white text-center">{player.deaths}</p>
-                <p className="col-span-1 text-sm text-white text-center">{player.assists}</p>
-                <p className="col-span-2 text-sm text-white text-center">{player.points}</p>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p className="text-white text-lg">Loading teams...</p>
+            )}
           </div>
         </div>
       </div>

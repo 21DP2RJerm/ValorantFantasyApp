@@ -10,15 +10,16 @@ use App\Models\TournamentTeam;
 
 class TeamController extends Controller
 {
-    public function getTeams()
+    public function getTeams($region)
     {
-        $teams = Teams::all()->map(function ($team) {
+        $teams = Teams::where('region', $region)->get()->map(function ($team) {
             return [
                 'name' => $team->name,
                 'logo' => asset("storage/teams/{$team->logo}"),
+                'id' => $team->id,
             ];
         });
-
+    
         return response()->json($teams);
     }
 
