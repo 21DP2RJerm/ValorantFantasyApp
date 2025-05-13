@@ -23,9 +23,13 @@ export default function Profile() {
 
               } 
           } 
-          catch (error) {
-            console.error("Registration failed:", error)
+          catch (error: any) {
+            if (error.response) {
+              console.error("Error response:", error.response.data);
+            }
+            console.error("Registration failed:", error);
           }
+
       };
 
       fetchProfile();
