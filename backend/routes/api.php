@@ -20,6 +20,7 @@ Route::post('/register', [RegisteredUserController::class, 'store'])
     ->name('register');
 Route::middleware('auth:sanctum')->get('/profile', [AuthController::class, 'profile']);
 Route::get('/teams/{region}', [TeamController::class, 'getTeams']);
+Route::get('/allTeams', [TeamController::class, 'getAllTeams']);
 Route::get('/players', [TeamController::class, 'getPlayers']);
 Route::get('/getTeamInfo/{teamId}', [TeamController::class, 'getTeamInfo']);
 Route::post('/createTeam', [TeamController::class, 'createTeam']);
