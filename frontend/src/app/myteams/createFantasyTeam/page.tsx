@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import api from 'axios';
+import Navigation from "@/app/navigation";
 
 export default function FantasyTeamId() {
   const [players, setPlayers] = useState([])
@@ -114,41 +115,14 @@ export default function FantasyTeamId() {
 
   return (
     <div className="relative flex justify-center h-screen w-screen space bg-purple-900 ">
-      <div className="absolute bg-purple-700 h-screen w-[15%] left-0 flex justify-center items-center border-r-8 border-gray-300">
-        <Image
-          alt="Logo"
-          width={200}
-          height={200}
-          src="/logo.png"
-          style={{ objectFit: "contain" }}
-          className="z-0 m-10 top-0 absolute"
-          priority
-        />
-        <div className="w-50% h-50% relative flex-col justify-center items-center grid grid-cols-1">
-          <Link href="/home" className="relative p-2 col-span-1 text-2xl text-white">
-            Home
-          </Link>
-          <Link href="/leaderboard" className="relative p-2 col-span-1 text-2xl text-white">
-            Leaderboard
-          </Link>
-          <Link href="/myteams" className="relative p-2 col-span-1 text-2xl text-white">
-            My Teams
-          </Link>
-          <Link href="/players" className="relative p-2 col-span-1 text-2xl text-white">
-            Players
-          </Link>
-          <Link href="/profile" className="relative p-2 col-span-1 text-2xl text-white">
-            Profile
-          </Link>
-        </div>
-      </div>
+      <Navigation/>
 
       <div className="absolute right-0 flex justify-center items-start h-full w-[85%] space bg-gray-800 pt-20">
         <div className="relative w-[90%] h-[90%] bg-purple-700 rounded-lg border-8 border-gray-300 flex flex-col">
           <div className="flex items-center justify-center p-6 h-[40%]">
             {[0, 1, 2, 3, 4].map((index) => (
               <div key={index} className="flex flex-col items-center justify-center rounded-lg w-[15%] h-full mx-3">
-                <div className="flex flex-col items-center justify-center border-4 border-gray-300 rounded-lg w-full h-full relative">
+                <div className="flex flex-col items-center justify-center border-4 shadow-2xl border-gray-300 rounded-lg w-full h-full relative">
                   <div className="absolute inset-0 flex items-center justify-center z-0">
                     {teamPlayers[index] ? (
                       <>
@@ -213,7 +187,7 @@ export default function FantasyTeamId() {
               </div>
             ))}
           </div>
-          <div className="flex-grow border-t-4 border-whit-gray-300 rounded-b-lg overflow-y-auto pt-8">
+          <div className="flex-grow border-t-4 border-white-gray-300 rounded-b-lg overflow-y-auto pt-8 ">
             <div className="flex items-center justify-start ml-10 mb-4 space-x-4">
               <input
                 type="text"
@@ -221,13 +195,13 @@ export default function FantasyTeamId() {
                 placeholder="Search for player"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="h-12 w-64 rounded-lg p-4 text-zinc-950"
+                className="h-12 w-64 rounded-lg p-4 text-zinc-950  shadow-2xl"
                 required
               />
               <select
                 value={selectedTournament}
                 onChange={handleTournamentChange}
-                className="h-12 w-64 rounded-lg p-2 text-zinc-950"
+                className="h-12 w-64 rounded-lg p-2 text-zinc-950  shadow-2xl"
               >
                 <option value="">All Tournaments</option>
                 {Array.isArray(tournaments) &&
@@ -239,7 +213,7 @@ export default function FantasyTeamId() {
               </select>
               <button 
                 onClick={createFantasyTeam}
-                className=" bg-white h-12 w-40 px-6 py-2 rounded-md font-semibold hover:bg-slate-300 transition-colors text-purple-500">
+                className=" bg-white h-12 w-40 px-6 py-2  shadow-2xl rounded-md font-semibold hover:bg-slate-300 transition-colors text-purple-500">
                 Create Team
               </button>
             </div>
@@ -248,7 +222,7 @@ export default function FantasyTeamId() {
                 filteredPlayers.map((player, index) => (
                   <div
                     key={index}
-                    className={`flex flex-col items-center justify-center border-4 ${
+                    className={`flex flex-col items-center justify-center border-4 shadow-2xl ${
                       isPlayerOnTeam(player) ? "border-green-400" : "border-gray-300"
                     } rounded-lg cursor-pointer w-[10%] aspect-square transition-transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white`}
                     onClick={() => handlePlayerClick(player)}

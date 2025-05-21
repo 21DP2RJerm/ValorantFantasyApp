@@ -82,11 +82,6 @@ export default function Login() {
                     disabled={loading}  
                     required
                 />
-                <div className="mb-4">
-                    <Link href="/forgot" className="text-main-blue">
-                    Forgot Password?
-                    </Link>
-                </div>
                 <button 
                     type="submit" 
                     className=" bg-white  px-6 py-2 rounded-md hover:bg-slate-300 transition-colors text-purple-500 mt-1"

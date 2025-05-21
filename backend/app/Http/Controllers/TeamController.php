@@ -22,6 +22,20 @@ class TeamController extends Controller
     
         return response()->json($teams);
     }
+    public function getTournamentTeams($tournament)
+    {
+        $teamIds = TournamentTeam::where('tournament_id', $tournament)->pluck('team_id');
+
+        $teams = Teams::whereIn('id', $teamIds)->get()->map(function ($team) {
+            return [
+                'name' => $team->name,
+                'logo' => asset("storage/teams/{$team->logo}"),
+                'id' => $team->id,
+            ];
+        });
+    
+        return response()->json($teams);
+    }
     public function getAllTeams()
     {
         $teams = Teams::all()->map(function ($team) {

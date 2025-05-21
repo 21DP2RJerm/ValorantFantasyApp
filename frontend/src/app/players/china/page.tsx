@@ -4,6 +4,7 @@ import Image from "next/image"
 import React, { useState, useEffect } from 'react';
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
+import Navigation from "@/app/navigation";
 
 export default function Home() {
     const [teams, setTeams] = useState([])
@@ -39,37 +40,7 @@ export default function Home() {
   
     return (
       <div className="relative flex justify-center h-screen w-screen space bg-purple-900">
-        {/* Sidebar */}
-        <div className="absolute bg-purple-700 h-screen w-[15%] left-0 flex justify-center items-center border-r-8 border-white">
-          <Image
-            alt="Logo"
-            width={200}
-            height={200}
-            src="/logo.png"
-            style={{ objectFit: "contain" }}
-            className="z-0 m-10 top-0 absolute"
-            priority
-          />
-          <div className="w-50% h-50% relative flex-col justify-center items-center grid grid-cols-1">
-            <Link href="/home" className="relative p-2 col-span-1 text-2xl text-white">
-              Home
-            </Link>
-            <Link href="/leaderboard" className="relative p-2 col-span-1 text-2xl text-white">
-              Leaderboard
-            </Link>
-            <Link href="/myteams" className="relative p-2 col-span-1 text-2xl text-white">
-              My Teams
-            </Link>
-            <Link href="/players" className="relative p-2 col-span-1 text-2xl text-white">
-              Players
-            </Link>
-            <Link href="/profile" className="relative p-2 col-span-1 text-2xl text-white">
-              Profile
-            </Link>
-          </div>
-        </div>
-  
-        {/* Main Content */}
+        <Navigation/>
         <div className="absolute right-0 flex justify-between items-start h-full w-[85%] space-x-4 bg-purple-400 pt-20 px-4">
           <div className="w-[85%] bg-purple-700 rounded-lg border-8 border-white flex flex-col overflow-y-auto">
             <h2 className="text-2xl text-white font-bold text-center py-4">Teams</h2>
