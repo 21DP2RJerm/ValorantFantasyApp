@@ -11,6 +11,7 @@ export default function CreateTeam() {
     const [teamLogo, setTeamLogo] = useState<File | null>(null);
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const regions = ["EMEA", "China", "Americas", "Pacific"];
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -56,7 +57,7 @@ export default function CreateTeam() {
     };
 
     return (
-        <div className="relative flex justify-center items-center h-screen w-screen bg-purple-900">
+        <div className="relative flex justify-center items-center h-screen w-screen bg-gray-900">
            <Navigation/>
             <form onSubmit={handleSubmit} className="flex flex-col items-center z-1 relative bg-purple-500 p-10 rounded-lg">
                 <input
@@ -69,16 +70,20 @@ export default function CreateTeam() {
                     disabled={loading}
                     required
                 />
-                <input
-                    type="text"
-                    name="teamRegion"
-                    placeholder="Enter team region"
-                    value={teamRegion}
-                    onChange={(e) => setTeamRegion(e.target.value)}
-                    className="h-12 w-64 my-4 rounded-lg p-4 text-zinc-950"
-                    disabled={loading}
-                    required
-                />
+                <select
+                      id="team1"
+                      value={teamRegion}
+                      onChange={(e) => setTeamRegion(e.target.value)}
+                      className="h-12 w-64 rounded-lg p-2 text-zinc-950 mb-4"
+                      required
+                    >
+                      <option value="">Select region</option>
+                      {regions.map((region) => (
+                        <option key={region} value={region}>
+                          {region}
+                        </option>
+                      ))}
+                </select>
                 <input
                     ref={fileInputRef}
                     type="file"

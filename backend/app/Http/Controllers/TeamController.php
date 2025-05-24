@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\GameResults;
 use Illuminate\Http\Request;
 use App\Models\Teams;
 use App\Models\Players;
+use App\Models\TeamResult;
 use App\Models\Tournaments;
 use App\Models\TournamentTeam;
 
@@ -125,14 +127,37 @@ class TeamController extends Controller
     {
         $team = Teams::where('id', $teamId)->first(); 
         $players = Players::where('team_id', $teamId)->get(); 
+        
+        $Teamgames = TeamResult::where('team_id', $teamId)->latest()->take(3)->pluck('game_id');
+
+        $games = GameResults::whereIn('id', $Teamgames)->get();
+
+        $gamesData = [];
+        foreach ($games as $game) {
+            $tournament = Tournaments::where('id', $game->tournament_id)->value('name');
+            $teamResults = TeamResult::where('game_id', $game->id)->get();
+            $results = $teamResults->map(function ($result) {
+                $team = Teams::find($result->team_id);
+                return [
+                    'team_id' => $result->team_id,
+                    'team_name' => $team->name,
+                    'team_logo' => $team->logo,
+                    'score' => $result->score,
+                ];
+            });
     
-        if (!$team) {
-            return response()->json(['error' => 'Team not found'], 404);
+            $gamesData[] = [
+                'game_id' => $game->id,
+                'game_name' => $game->gameName, 
+                'results' => $results,
+                'tournament' => $tournament,
+            ];
         }
     
         return response()->json([
             'team' => $team,
-            'players' => $players
+            'players' => $players,
+            'games' => $gamesData
         ]);
     }
 }

@@ -10,6 +10,7 @@ export default function Team() {
   const { teamId } = useParams() 
   const [team, setTeam] = useState([])
   const [players, setPlayers] = useState([])
+  const [games, setGames] = useState([])
     useEffect(() => {
       async function fetchTeamData() {
         try {
@@ -19,6 +20,7 @@ export default function Team() {
           const data = await response.json()
           setTeam(data.team)
           setPlayers(data.players)
+          setGames(data.games)
           console.log("Team Data:", data)
         } catch (error) {
           console.error("Error fetching team details:", error)
@@ -32,7 +34,7 @@ export default function Team() {
     <div className="relative flex justify-center h-screen w-screen space bg-purple-900 ">
       <Navigation/>
 
-      <div className="absolute right-0 flex justify-center items-start h-full w-[85%] bg-purple-400 pt-20">
+      <div className="absolute right-0 flex justify-center items-start h-full w-[85%] bg-gray-900 pt-20">
         <div className="relative w-[70%] h-[60%] bg-purple-700 rounded-lg border-8 border-white flex flex-col">
           {/* Team Info */}
           <div className="flex items-center p-6">
@@ -56,9 +58,10 @@ export default function Team() {
             <div className="flex items-center justify-center p-6 h-full gap-4">
               {players.length > 0 ? (
                 players.map((player, index) => (
-                  <div
+                  <Link
+                    href={`/player/${player.id}`}
                     key={index}
-                    className="flex flex-col items-center justify-center border-4 border-white rounded-lg w-[16%] aspect-square transition-transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white"
+                    className="flex flex-col items-center justify-center border-4 bg-purple-800 border-white rounded-lg w-[16%] aspect-square transition-transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white"
                   >
                     <Image
                       src={`http://127.0.0.1:8000/storage/players/${player.logo}`}
@@ -69,14 +72,47 @@ export default function Team() {
                       className="rounded-full border-4 border-white mb-2 mt-4"
                     />
                     <p className="text-lg text-white text-center">{player.in_game_name}</p>
-                    <p className="text-lg text-white text-center mb-2">Initiator</p>
-                  </div>
+                  </Link>
                 ))
               ) : (
                 <p className="text-white text-lg">Loading players...</p>
               )}
             </div>
           </div>
+        </div>
+        <div className="relative w-[20%] h-[60%] bg-purple-700 rounded-lg border-8 ml-10 border-white flex flex-col">
+          {games.length> 0 ?(
+            games.map((game, index) => (
+                <div key={game.id} className="relative w-full h-1/3 border-2 border-white flex flex-row items-center justify-between p-2">
+                  <div className="flex items-center justify-center">
+                    <Image
+                      src={`http://127.0.0.1:8000/storage/teams/${game.results[0].team_logo}`}
+                      alt={'team1'}
+                      width={80}
+                      height={80}
+                      style={{ objectFit: "contain" }}
+                      className="max-w-full max-h-full"
+                    />
+                  </div>
+                  <div className="flex flex-col items-center justify-center flex-1 px-4">
+                    <p className="text-lg text-white text-center font-bold">{game.results[0].score + " : " + game.results[1].score}</p>
+                    <p className="text-sm text-white text-center">{game.tournament + " " + game.game_name}</p>
+                  </div>
+                  <div className="flex items-center justify-center">
+                    <Image
+                      src={`http://127.0.0.1:8000/storage/teams/${game.results[1].team_logo}`}
+                      alt={'team2'}
+                      width={80}
+                      height={80}
+                      style={{ objectFit: "contain" }}
+                      className="max-w-full max-h-full"
+                    />
+                  </div>
+                </div>
+            ))
+          ): (
+            <p className="text-white text-lg col-span-full text-center">Loading games...</p>
+          )}
         </div>
       </div>
     </div>

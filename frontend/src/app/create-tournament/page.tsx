@@ -2,18 +2,12 @@
 
 import Image from "next/image"
 import type React from "react"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import api from "axios"
 import Navigation from "../navigation"
 
-interface Team {
-  id: number
-  name: string
-  logo: string
-  region: string
-}
 
 export default function CreateTournament() {
   const [name, setName] = useState("")
@@ -23,11 +17,19 @@ export default function CreateTournament() {
   const [location, setLocation] = useState("")
   const [loading, setLoading] = useState(false)
   const [region, setRegion] = useState("")
-  const [teams, setTeams] = useState<Team[]>([])
-  const [selectedTeams, setSelectedTeams] = useState<Team[]>([])
+  const [logo, setLogo] =  useState<File | null>(null)
+  const [teams, setTeams] = useState([])
+  const [selectedTeams, setSelectedTeams] = useState([])
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
 
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setLogo(e.target.files[0])
+    }
+  }
   useEffect(() => {
     async function fetchTeams() {
       try {
@@ -70,54 +72,59 @@ export default function CreateTournament() {
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!name || !type || !start_date || !end_date || !location) {
-      alert("Please fill all required fields!")
-      return
+    e.preventDefault();
+  
+    // client-side required checks
+    if (!name || !type || !start_date || !end_date || !location || !logo) {
+      alert("Please fill all required fields!");
+      return;
     }
-
     if (selectedTeams.length === 0) {
-      alert("Please select at least one team for the tournament!")
-      return
+      alert("Please select at least one team!");
+      return;
     }
-
-    setLoading(true)
-    setError(null)
+  
+    setLoading(true);
+    setError(null);
+  
+    // Build FormData
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("type", type);
+    formData.append("start_date", start_date);
+    formData.append("end_date", end_date);
+    formData.append("location", location);
+    formData.append("logo", logo);                      // ← File goes here
+    // for teams, you can either JSON-encode:
+    formData.append("teams", JSON.stringify(selectedTeams.map(t => t.id)));
+    // —or append each one as teams[]:
+    // selectedTeams.forEach(t => formData.append("teams[]", t.id.toString()));
+  
     try {
-      // Add credentials: 'include' to send cookies if your API uses session authentication
       const response = await api.post(
         "http://127.0.0.1:8000/api/createTournament",
-        {
-          name: name,
-          type: type,
-          start_date: start_date,
-          end_date: end_date,
-          location: location,
-          teams: selectedTeams.map((team) => team.id), // Send only team IDs
-        },
+        formData,
         {
           headers: {
+
             Accept: "application/json",
-            "Content-Type": "application/json",
           },
-        },
-      )
-
-      console.log("Response status:", response.status)
-
-      alert("Tournament created successfully!")
-      router.push("/home") // Redirect to home page after successful creation
-    } catch (error: any) {
-      console.error("Tournament creation failed:", error)
-      setError(error.message || "Failed to create tournament")
-      alert(error.message || "Failed to create tournament")
+        }
+      );
+  
+      alert("Tournament created successfully!");
+      router.push("/home");
+    } catch (err: any) {
+      console.error("Tournament creation failed:", err);
+      setError(err.response?.data?.message || err.message);
+      alert(err.response?.data?.message || "Failed to create tournament");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <div className="relative flex justify-center items-center h-screen w-screen bg-purple-900">
+    <div className="relative flex justify-center items-center h-screen w-screen bg-gray-900">
       <Navigation/>
 
       <div className="flex justify-center align-center items-start w-[85%] absolute right-0 h-full">
@@ -185,21 +192,17 @@ export default function CreateTournament() {
             />
             <div className="mt-4 w-64 text-white">
               <p className="font-semibold mb-2">Selected Teams: {selectedTeams.length}</p>
-              <div className="flex flex-wrap gap-2">
-                {selectedTeams.map((team) => (
-                  <div key={team.id} className="bg-purple-700 px-2 py-1 rounded-md text-sm flex items-center">
-                    {team.name}
-                    <button
-                      type="button"
-                      onClick={() => toggleTeamSelection(team)}
-                      className="ml-2 text-white hover:text-red-300"
-                    >
-                      ✕
-                    </button>
-                  </div>
-                ))}
-              </div>
             </div>
+            <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+              <button
+                type="button"
+                className="bg-white px-6 py-2 rounded-md hover:bg-slate-300 transition-colors text-purple-500 mt-1 mb-6"
+                disabled={loading}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                Upload Player Logo
+              </button>
+            {logo && <p className="text-white">Selected File: {logo.name}</p>}
             <button
               type="submit"
               className="bg-white px-6 py-2 rounded-md hover:bg-slate-300 transition-colors text-purple-500 mt-6 font-semibold"
@@ -245,7 +248,7 @@ export default function CreateTournament() {
                       width={80}
                       height={80}
                       style={{ objectFit: "contain" }}
-                      className="rounded-full mb-2"
+                      className="mb-2"
                     />
                     <p className="text-lg text-white text-center">{team.name}</p>
                     <p className="text-sm text-white text-center opacity-75">{team.region}</p>

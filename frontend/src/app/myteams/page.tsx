@@ -3,24 +3,10 @@ import { useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import Navigation from "../navigation"
-// Define types for our data
-interface Player {
-  player_id: number
-  in_game_name: string
-  logo: string
-  team_logo: string
-}
 
-interface FantasyTeam {
-  fantasy_team_id: number
-  tournament_id: number
-  tournament_name?: string
-  players: Player[]
-  points?: number
-}
 
 export default function MyTeams() {
-  const [teams, setTeams] = useState<FantasyTeam[]>([])
+  const [teams, setTeams] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
 

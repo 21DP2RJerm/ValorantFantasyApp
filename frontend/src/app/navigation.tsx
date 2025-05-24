@@ -66,27 +66,27 @@ export default function Navigation() {
         className="z-0 m-10 top-0 absolute"
         priority
       />
-      <div className="w-50% h-50% relative flex-col justify-center items-center grid grid-cols-1">
-        <Link href="/home" className="relative p-2 col-span-1 text-2xl text-white">
+      <div className="w-[100%] h-100% relative flex-col justify-center items-center grid grid-cols-1">
+        <Link href="/home" className="relative p-5 w-[100%] col-span-1 text-2xl text-white border-b border-t text-center border-purple-800 hover:bg-purple-800 transition-colors">
           Home
         </Link>
-        <Link href="/leaderboard" className="relative p-2 col-span-1 text-2xl text-white">
+        <Link href="/leaderboard" className="relative p-5 col-span-1 text-2xl text-white border-b text-center border-purple-800 hover:bg-purple-800 transition-colors">
           Leaderboard
         </Link>
-        <Link href="/myteams" className="relative p-2 col-span-1 text-2xl text-white">
+        <Link href="/myteams" className="relative p-5 col-span-1 text-2xl text-white border-b text-center border-purple-800 hover:bg-purple-800 transition-colors">
           My Teams
         </Link>
-        <Link href="/players" className="relative p-2 col-span-1 text-2xl text-white">
+        <Link href="/players" className="relative p-5 col-span-1 text-2xl text-white border-b text-center border-purple-800 hover:bg-purple-800 transition-colors">
           Players
         </Link>
-        <Link href="/tournaments" className="relative p-2 col-span-1 text-2xl text-white">
+        <Link href="/tournaments" className="relative p-5 col-span-1 text-2xl text-white border-b text-center border-purple-800 hover:bg-purple-800 transition-colors">
           Tournaments
         </Link>
-        <Link href="/profile" className="relative p-2 col-span-1 text-2xl text-white">
+        <Link href="/profile" className="relative p-5 col-span-1 text-2xl text-white border-b text-center border-purple-800 hover:bg-purple-800 transition-colors">
           Profile
         </Link>
         {admin === 1 && (
-          <Link href="/create-results" className="relative p-2 col-span-1 text-2xl text-white">
+          <Link href="/create-results" className="relative p-5 col-span-1 text-2xl text-white border-b text-center border-purple-800 hover:bg-purple-800 transition-colors">
             Input Scores
           </Link>
         )}

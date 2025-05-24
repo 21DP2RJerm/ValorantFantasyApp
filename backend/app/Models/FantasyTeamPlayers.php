@@ -10,6 +10,10 @@ class FantasyTeamPlayers extends Model
     {
         return $this->belongsTo(FantasyTeam::class);
     }
+    public function results()
+    {
+        return $this->hasMany(PlayerResults::class);
+    }
     public function player()
     {
         return $this->belongsTo(Players::class);

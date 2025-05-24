@@ -31,12 +31,17 @@ Route::post('/createTournament', [TournamentController::class, 'createTournament
 Route::get('/getTournaments', [TournamentController::class, 'getTournaments']);
 Route::get('/getUnstartedTournaments', [TournamentController::class, 'getUnstartedTournaments']);
 Route::get('/getTournamentInfo/{tournamentId}', [TournamentController::class, 'getTournamentInfo']);
+Route::get('/getLatestTournamentInfo', [TournamentController::class, 'getLatestTournamentInfo']);
+Route::get('/getLeaderboardTournaments', [TournamentController::class, 'getLeaderboardTournaments']);
 //fantasy team
 
 
 //results
 Route::post('/createGameResult', [ResultController::class, 'createGameResult']);
 Route::post('/createPlayerResult', [ResultController::class, 'createPlayerResult']);
+Route::post('/createResults', [ResultController::class, 'createResults']);
+Route::get('/getPlayersResults/{playerId}', [ResultController::class, 'getPlayersResults']);
+
 Route::post('/login', function (Request $request) {
     $request->validate([
         'email' => 'required|email',
@@ -60,3 +65,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //fantasy teams
 Route::middleware('auth:sanctum')->post('/createFantasyTeam', [FantasyTeamController::class, 'createFantasyTeam']);
 Route::middleware('auth:sanctum')->get('/getUserFantasyTeams', [FantasyTeamController::class, 'getUserFantasyTeams']);
+Route::get('/getFantasyTeams/{tournamentId}', [FantasyTeamController::class, 'getFantasyTeams']);

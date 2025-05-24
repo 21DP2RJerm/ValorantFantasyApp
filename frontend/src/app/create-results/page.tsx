@@ -5,51 +5,25 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Navigation from "../navigation"
-
-interface Tournament {
-  id: number
-  name: string
-}
-
-interface Team {
-  id: number
-  name: string
-  logo: string
-}
-
-interface Player {
-  id: number
-  name: string
-  last_name: string
-  in_game_name: string
-}
-
-interface PlayerStat {
-  playerId: number
-  playerName: string
-  kills: number
-  deaths: number
-  assists: number
-}
+import api from "axios"
 
 export default function MatchResults() {
-  const router = useRouter()
 
-  // Step tracking
   const [currentStep, setCurrentStep] = useState(1)
 
   // Data states
-  const [tournaments, setTournaments] = useState<Tournament[]>([])
-  const [teams, setTeams] = useState<Team[]>([])
+  const [tournaments, setTournaments] = useState([])
+  const [teams, setTeams] = useState([])
   const [selectedTournament, setSelectedTournament] = useState("")
   const [selectedTeam1, setSelectedTeam1] = useState("")
   const [selectedTeam2, setSelectedTeam2] = useState("")
-  const [team1Players, setTeam1Players] = useState<Player[]>([])
-  const [team2Players, setTeam2Players] = useState<Player[]>([])
-  const [team1Stats, setTeam1Stats] = useState<PlayerStat[]>([])
-  const [team2Stats, setTeam2Stats] = useState<PlayerStat[]>([])
+  const [team1Players, setTeam1Players] = useState([])
+  const [team2Players, setTeam2Players] = useState([])
+  const [team1Stats, setTeam1Stats] = useState([])
+  const [team2Stats, setTeam2Stats] = useState([])
   const [team1Score, setTeam1Score] = useState("")
   const [team2Score, setTeam2Score] = useState("")
+  const [gameName, setGameName] = useState("")
   // Loading states
   const [loading, setLoading] = useState(false)
   const [loadingTournaments, setLoadingTournaments] = useState(false)
@@ -227,28 +201,28 @@ export default function MatchResults() {
       tournamentId: selectedTournament,
       team1Id: selectedTeam1,
       team2Id: selectedTeam2,
+      team1Score: team1Score,
+      team2Score: team2Score,
+      gameName: gameName,
       playerStats: [...team1Stats, ...team2Stats],
     }
     console.log(matchData)
     try {
-      // This is a placeholder - you'll need to create this endpoint
-      const response = await fetch("http://127.0.0.1:8000/api/submitMatchResults", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(matchData),
-      })
-
-      if (!response.ok) throw new Error("Failed to submit match results")
-
-      alert("Match results submitted successfully!")
-      router.push("/matches") // Redirect to matches page or wherever appropriate
+      const response = await api.post(
+        "http://127.0.0.1:8000/api/createResults",
+        matchData,
+        {
+          headers: {"Content-Type": "application/json"},
+        }
+      );
+    
+      // No need to check response.ok – if we're here, it's a 2xx
+      alert("Match results submitted successfully!");
     } catch (error) {
-      console.error("Error submitting match results:", error)
-      alert("Failed to submit match results")
+      console.error("Error submitting match results:", error);
+      alert("Failed to submit match results");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -260,7 +234,6 @@ export default function MatchResults() {
         <div className="max-w-3xl mx-auto bg-purple-500 p-8 rounded-lg">
           <h1 className="text-2xl font-bold text-white mb-6 text-center">Match Results Entry</h1>
 
-          {/* Step indicator */}
           <div className="flex justify-between mb-8">
             <div className={`w-1/3 text-center ${currentStep === 1 ? "text-white font-bold" : "text-purple-200"}`}>
               1. Select Tournament
@@ -273,42 +246,64 @@ export default function MatchResults() {
             </div>
           </div>
 
+
+{/* FIRST STEP */}
+
+
           <form onSubmit={handleSubmit}>
-            {/* Step 1: Tournament Selection */}
             {currentStep === 1 && (
               <div className="space-y-4">
-                <div className="flex flex-col">
-                  <label htmlFor="tournament" className="text-white mb-2">
-                    Select Tournament
-                  </label>
-                  <select
-                    id="tournament"
-                    value={selectedTournament}
-                    onChange={handleTournamentChange}
-                    className="h-12 rounded-lg p-2 text-zinc-950"
-                    disabled={loadingTournaments}
-                    required
-                  >
-                    <option value="">Select a tournament</option>
-                    {tournaments.map((tournament) => (
-                      <option key={tournament.id} value={tournament.id}>
-                        {tournament.name}
-                      </option>
-                    ))}
-                  </select>
-                  {loadingTournaments && (
-                    <div className="flex items-center justify-center mt-4">
-                      <span className="ml-2 text-white">Loading tournaments...</span>
-                    </div>
-                  )}
+                <div className="flex flex-row gap-4">
+                  <div className="flex-1">
+                    <label htmlFor="tournament" className="text-white mb-2 block">
+                      Select Tournament
+                    </label>
+                    <select
+                      id="tournament"
+                      value={selectedTournament}
+                      onChange={handleTournamentChange}
+                      className="h-12 w-full rounded-lg p-2 text-zinc-950"
+                      disabled={loadingTournaments}
+                      required
+                    >
+                      <option value="">Select a tournament</option>
+                      {tournaments.map((tournament) => (
+                        <option key={tournament.id} value={tournament.id}>
+                          {tournament.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="flex-1">
+                    <label htmlFor="gameName" className="text-white mb-2 block">
+                      Game Name
+                    </label>
+                    <input
+                      id="gameName"
+                      type="text"
+                      value={gameName}
+                      onChange={(e) => setGameName(e.target.value)}
+                      className="h-12 w-full rounded-lg p-2 text-zinc-950"
+                      placeholder="Enter game name"
+                      disabled={loadingTournaments}
+                      required
+                    />
+                  </div>
                 </div>
+
+                {loadingTournaments && (
+                  <div className="flex items-center justify-center mt-4">
+                    <span className="ml-2 text-white">Loading tournaments...</span>
+                  </div>
+                )}
 
                 <div className="flex justify-end mt-6">
                   <button
                     type="button"
                     onClick={nextStep}
                     className="bg-white px-6 py-2 rounded-md hover:bg-slate-300 transition-colors text-purple-500"
-                    disabled={!selectedTournament || loadingTournaments}
+                    disabled={!selectedTournament || !gameName || loadingTournaments}
                   >
                     Next
                   </button>
@@ -316,10 +311,14 @@ export default function MatchResults() {
               </div>
             )}
 
-            {/* Step 2: Team Selection */}
+
+{/* SECOND STEP */}
+
+
+
             {currentStep === 2 && (
               <div className="space-y-4">
-                <div className="flex flex-col md:flex-row gap-4">
+                <div className="flex flex-row gap-4">
                   <div className="flex-1">
                     <label htmlFor="team1" className="text-white mb-2 block">
                       Team 1
@@ -389,7 +388,12 @@ export default function MatchResults() {
               </div>
             )}
 
-            {/* Step 3: Player Stats */}
+
+
+  {/* LAST STEP */}
+
+
+
             {currentStep === 3 && (
               <div>
                 {loadingPlayers ? (
@@ -398,7 +402,6 @@ export default function MatchResults() {
                   </div>
                 ) : (
                   <>
-                    {/* Team 1 Players */}
                     <div className="mb-6">
                       <div className="flex flex-row space-x-2">
                         <h3 className="text-xl font-semibold text-white mb-4">
@@ -460,7 +463,6 @@ export default function MatchResults() {
                       </div>
                     </div>
 
-                    {/* Team 2 Players */}
                     <div className="mb-6">
                       <div className="flex flex-row space-x-2">
                         <h3 className="text-xl font-semibold text-white mb-4">

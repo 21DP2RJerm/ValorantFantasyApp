@@ -8,14 +8,6 @@ import Navigation from "@/app/navigation";
 export default function FantasyTeamId() {
   const [players, setPlayers] = useState([])
   const [search, setSearch] = useState("")
-  const roles = ["Duelist", "Controller", "Initiator", "Sentinel", "Flex"]
-  const roleMeanings = [
-    "Deaths are equal to -1 point not -2",
-    "Assists give +2 points instead of +1",
-    "Assists give +2 points instead of +1",
-    "Each round survived gives +1 point",
-    "No point changes",
-  ]
   const [teamPlayers, setTeamPlayers] = useState(Array(5).fill(null))
   const [tournaments, setTournaments] = useState([])
   const [selectedTournament, setSelectedTournament] = useState("")
@@ -119,7 +111,7 @@ export default function FantasyTeamId() {
 
       <div className="absolute right-0 flex justify-center items-start h-full w-[85%] space bg-gray-800 pt-20">
         <div className="relative w-[90%] h-[90%] bg-purple-700 rounded-lg border-8 border-gray-300 flex flex-col">
-          <div className="flex items-center justify-center p-6 h-[40%]">
+          <div className="flex items-center justify-center p-6 h-[35%]">
             {[0, 1, 2, 3, 4].map((index) => (
               <div key={index} className="flex flex-col items-center justify-center rounded-lg w-[15%] h-full mx-3">
                 <div className="flex flex-col items-center justify-center border-4 shadow-2xl border-gray-300 rounded-lg w-full h-full relative">
@@ -181,13 +173,10 @@ export default function FantasyTeamId() {
                     )}
                   </div>
                 </div>
-                <span title={roleMeanings[index]} className="text-2xl text-white text-center pt-2 cursor-pointer">
-                  {roles[index]}
-                </span>
               </div>
             ))}
           </div>
-          <div className="flex-grow border-t-4 border-white-gray-300 rounded-b-lg overflow-y-auto pt-8 ">
+          <div className="flex-grow border-t-4 border-white-gray-300 h-[65%] rounded-b-lg overflow-y-auto pt-8 ">
             <div className="flex items-center justify-start ml-10 mb-4 space-x-4">
               <input
                 type="text"

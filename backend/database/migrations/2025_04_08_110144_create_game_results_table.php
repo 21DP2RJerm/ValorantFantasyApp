@@ -14,11 +14,7 @@ return new class extends Migration
         Schema::create('game_results', function (Blueprint $table) {
             $table->id();
             $table->integer('tournament_id');
-            $table->integer('team1_id');
-            $table->integer('team2_id');
-            $table->integer('team1_score');
-            $table->integer('team2_score');
-            $table->json('maps');
+            $table->string('gameName');
             $table->timestamps();
         });
     }

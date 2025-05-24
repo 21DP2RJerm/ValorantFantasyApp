@@ -18,8 +18,25 @@ class FantasyTeam extends Model
     {
         return $this->hasMany(FantasyTeamPlayers::class);
     }
-    public function players()
+
+    public function calculatePoints($tournamentId, $gameResultIds)
     {
-        return $this->belongsToMany(Players::class, 'fantasy_team_players');
+        $totalPoints = 0;
+    
+        foreach ($this->fantasyTeamPlayers as $player) {
+            $sum = PlayerResults::whereIn('game_result_id', $gameResultIds)
+                ->where('player_id', $player->player_id)
+                ->sum('points');
+    
+            \Log::info("Player {$player->player_id} points: {$sum}");
+    
+            $totalPoints += $sum;
+        }
+    
+        $this->points = $totalPoints;
+        $this->save();
+    
+        return $totalPoints;
     }
+    
 }

@@ -19,7 +19,7 @@ export default function Players() {
     <div className="relative flex justify-center h-screen w-screen space bg-purple-900">
       <Navigation/>
 
-      <div className="absolute right-0 flex justify-center items-center h-full w-[85%] bg-purple-400">
+      <div className="absolute right-0 flex justify-center items-center h-full w-[85%] bg-gray-900">
         <div className="grid grid-cols-2 gap-8 w-[80%] h-[80%]">
           {regions.map((region, index) => (
             <Link

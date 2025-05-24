@@ -6,6 +6,7 @@ use App\Models\FantasyTeam;
 use App\Models\FantasyTeamPlayers;
 use App\Models\Players;
 use App\Models\Tournaments;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,7 +21,6 @@ class FantasyTeamController extends Controller
         'players' => 'required|array|size:5', 
     ]);
     
-    $roles = ["Duelist", "Controller", "Initiator", "Sentinel", "Flex"];
 
     if(FantasyTeam::where('tournament_id', $request->tournament_id)
         ->where('user_id', $user->id)
@@ -56,7 +56,6 @@ class FantasyTeamController extends Controller
         $fantasyTeamPlayer = new FantasyTeamPlayers();
         $fantasyTeamPlayer->fantasy_team_id = $fantasyTeam->id;
         $fantasyTeamPlayer->player_id = $playerId;
-        $fantasyTeamPlayer->role = $roles[$i];
         $fantasyTeamPlayer->save();
         $i = $i + 1;
     }
@@ -100,5 +99,17 @@ class FantasyTeamController extends Controller
         });
 
         return response()->json($fantasyTeams);
+    }
+
+    public function getFantasyTeams($tournamentId)
+    {
+        $fantasyTeams = FantasyTeam::with(['user', 'fantasyTeamPlayers.player'])
+            ->where('tournament_id', $tournamentId)
+            ->orderBy('points', 'desc')
+            ->get();
+    
+        return response()->json([
+            'fantasyTeams' => $fantasyTeams
+        ]);
     }
 }

@@ -30,7 +30,7 @@ export default function EMEA() {
   return (
     <div className="relative flex justify-center h-screen w-screen space bg-purple-900">
        <Navigation/>
-      <div className="absolute right-0 flex justify-between items-start h-full w-[85%] space-x-4 bg-purple-400 pt-20 px-4">
+      <div className="absolute right-0 flex justify-between items-start h-full w-[85%] space-x-4 bg-gray-900 pt-20 px-4">
         <div className="w-[85%] bg-purple-700 rounded-lg border-8 border-white flex flex-col overflow-y-auto">
           <h2 className="text-2xl text-white font-bold text-center py-4">Teams</h2>
           <div className="flex space-x-4 px-6 items-center justify-center">
@@ -47,7 +47,7 @@ export default function EMEA() {
                 <Link
                   href={`/players/${team.id}`}
                   key={index}
-                  className="flex flex-col items-center justify-center border-4 border-white rounded-lg w-[20%] aspect-square transition-transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white"
+                  className="flex flex-col items-center justify-center border-4 border-white rounded-lg w-[15%] bg-purple-800 aspect-square transition-transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white"
                 >
                   <Image
                     src={team.logo}

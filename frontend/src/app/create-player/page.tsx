@@ -4,10 +4,6 @@ import { useState, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Navigation from "../navigation"
 
-interface Team {
-  id: number
-  name: string
-}
 
 export default function CreateTeam() {
   const [playerName, setPlayerName] = useState("")
@@ -16,7 +12,7 @@ export default function CreateTeam() {
   const [playerTeam, setPlayerTeam] = useState("")
   const [playerLogo, setPlayerLogo] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)
-  const [teams, setTeams] = useState<Team[]>([])
+  const [teams, setTeams] = useState([])
   const router = useRouter()
 
   const fileInputRef = useRef<HTMLInputElement | null>(null)
@@ -77,7 +73,7 @@ export default function CreateTeam() {
   }
 
   return (
-    <div className="relative flex justify-center items-center h-screen w-screen bg-purple-900">
+    <div className="relative flex justify-center items-center h-screen w-screen bg-gray-900">
       <Navigation />
       <form onSubmit={handleSubmit} className="flex flex-col items-center z-1 relative bg-purple-500 p-10 rounded-lg">
         <input
