@@ -18,6 +18,7 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 Route::post('/register', [RegisteredUserController::class, 'store'])
     ->middleware('guest')
     ->name('register');
+Route::middleware('auth:sanctum')->get('/verifyAdmin', [AuthController::class, 'verifyAdmin']);
 Route::middleware('auth:sanctum')->get('/profile', [AuthController::class, 'profile']);
 Route::get('/teams/{region}', [TeamController::class, 'getRegionTeams']);
 Route::get('/allTeams', [TeamController::class, 'getAllTeams']);
@@ -26,6 +27,10 @@ Route::get('/players', [TeamController::class, 'getPlayers']);
 Route::get('/getTeamInfo/{teamId}', [TeamController::class, 'getTeamInfo']);
 Route::post('/createTeam', [TeamController::class, 'createTeam']);
 Route::post('/createPlayer', [TeamController::class, 'createPlayer']);
+Route::post('/updatePlayer/{id}', [TeamController::class, 'updatePlayer']);
+Route::post('/updateTeam/{id}', [TeamController::class, 'updateTeam']);
+Route::get('/getPlayer/{id}', [TeamController::class, 'getPlayer']);
+Route::get('/getTeam/{id}', [TeamController::class, 'getTeam']);
 //tournaments
 Route::post('/createTournament', [TournamentController::class, 'createTournament']);
 Route::get('/getTournaments', [TournamentController::class, 'getTournaments']);

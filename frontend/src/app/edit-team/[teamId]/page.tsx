@@ -1,11 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import Navigation from "../navigation";
-export default function CreateTeam() {
+import { useRouter,useParams } from "next/navigation";
+import Navigation from "../../navigation";
+export default function UpdateTeam() {
+    const {teamId} = useParams()
     const [teamName, setTeamName] = useState("");
     const [teamRegion, setTeamRegion] = useState("");
     const [teamLogo, setTeamLogo] = useState<File | null>(null);
@@ -20,6 +21,24 @@ export default function CreateTeam() {
             setTeamLogo(e.target.files[0]);
         }
     };
+    useEffect(() => {
+        async function fetchTeamData() {
+          try {
+            const response = await fetch(`http://127.0.0.1:8000/api/getTeam/${teamId}`)
+            if (!response.ok) throw new Error("Failed to fetch player data")
+    
+            const data = await response.json()
+            setTeamName(data.name)
+            setTeamRegion(data.region)
+            setTeamLogo(data.logo)
+            console.log("Player Data:",data.games)
+          } catch (error) {
+            console.error("Error fetching Player details:", error)
+          }
+        }
+    
+        fetchTeamData()
+      }, [teamId])
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -31,20 +50,20 @@ export default function CreateTeam() {
         formData.append("logo", teamLogo);
 
         try {
-            const response = await fetch("http://127.0.0.1:8000/api/createTeam", {
+            const response = await fetch(`http://127.0.0.1:8000/api/updateTeam/${teamId}`, {
                 method: "POST",
                 body: formData,
             });
 
             if (!response.ok) {
-                throw new Error("Failed to create team");
+                throw new Error("Failed to update team");
             }
 
             const data = await response.json();
-            router.push(`/players/${data.id}`)
+            alert("Team updated successfully!");
         } catch (error) {
             console.error("Error:", error);
-            alert("Failed to create team.");
+            alert("Failed to update team.");
         } finally {
             setLoading(false);
         }
@@ -99,7 +118,7 @@ export default function CreateTeam() {
                     className="bg-white px-6 py-2 rounded-md hover:bg-slate-300 transition-colors text-purple-500 mt-1"
                     disabled={loading}
                 >
-                    {loading ? "Creating..." : "Create Team"}
+                    {loading ? "Updating..." : "Update Team"}
                 </button>
             </form>
         </div>

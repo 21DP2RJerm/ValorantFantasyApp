@@ -4,16 +4,20 @@ import Image from "next/image"
 import Link from "next/link"
 import api from 'axios';
 import Navigation from "@/app/navigation";
+import { useRouter } from "next/navigation";
 
 export default function FantasyTeamId() {
   const [players, setPlayers] = useState([])
   const [search, setSearch] = useState("")
   const [teamPlayers, setTeamPlayers] = useState(Array(5).fill(null))
   const [tournaments, setTournaments] = useState([])
+  const [error, setError] = useState<string | null>(null)
   const [selectedTournament, setSelectedTournament] = useState("")
+  const router = useRouter()
 
   async function createFantasyTeam(){
     try {
+      setError(null)
       console.log(teamPlayers);
       const playerIds = teamPlayers.map(player => player?.player_id);
       const token = localStorage.getItem('userToken');
@@ -30,9 +34,13 @@ export default function FantasyTeamId() {
           },
         },)
         const text = await response; 
+        console.log("text.data: ", text.data)
+        if(text.data == "Fantasy team created"){
+          router.push("/myteams")
+        };
         console.log("Raw Response:", text); 
     
-        alert(text.data);
+        setError(text.data);
     }catch(error){
       console.error("Team creation failed:", error)
     }
@@ -61,27 +69,22 @@ export default function FantasyTeamId() {
     }
 
     fetchTournaments()
-    fetchPlayers() // Initial fetch with no tournament filter
+    fetchPlayers() 
   }, [])
 
-  // Filter players based on search term only
   const filteredPlayers = players.filter((player) => player.in_game_name.toLowerCase().includes(search.toLowerCase()))
 
-  // Check if player is already on the team and return their index
   const getPlayerTeamIndex = (player) => {
     return teamPlayers.findIndex((teamPlayer) => teamPlayer && teamPlayer.in_game_name === player.in_game_name)
   }
 
-  // Check if player is on team
   const isPlayerOnTeam = (player) => {
     return getPlayerTeamIndex(player) !== -1
   }
 
-  // Handle player click - add to team if not on team, remove if already on team
   const handlePlayerClick = (player) => {
     const playerIndex = getPlayerTeamIndex(player)
 
-    // If player is already on team, remove them
     if (playerIndex !== -1) {
       const newTeamPlayers = [...teamPlayers]
       newTeamPlayers[playerIndex] = null
@@ -89,7 +92,6 @@ export default function FantasyTeamId() {
       return
     }
 
-    // Otherwise, add to first empty slot
     const firstEmptyIndex = teamPlayers.findIndex((p) => p === null)
     if (firstEmptyIndex !== -1) {
       const newTeamPlayers = [...teamPlayers]
@@ -103,6 +105,7 @@ export default function FantasyTeamId() {
     setSelectedTournament(tournamentId)
     fetchPlayers(tournamentId === "" ? null : tournamentId)
     setTeamPlayers(Array(5).fill(null))
+    setError(null)
   }
 
   return (
@@ -110,6 +113,7 @@ export default function FantasyTeamId() {
       <Navigation/>
 
       <div className="absolute right-0 flex justify-center items-start h-full w-[85%] space bg-gray-800 pt-20">
+        
         <div className="relative w-[90%] h-[90%] bg-purple-700 rounded-lg border-8 border-gray-300 flex flex-col">
           <div className="flex items-center justify-center p-6 h-[35%]">
             {[0, 1, 2, 3, 4].map((index) => (
@@ -176,6 +180,13 @@ export default function FantasyTeamId() {
               </div>
             ))}
           </div>
+          <div className="relative flex w-full items-center justify-center">
+            {error && (
+                <div className="bg-red-100 border relative text-center border-red-400 text-red-700 px-4 py-3 rounded mb-4 w-[50%]">{error}</div>
+              )}
+          </div>
+
+
           <div className="flex-grow border-t-4 border-white-gray-300 h-[65%] rounded-b-lg overflow-y-auto pt-8 ">
             <div className="flex items-center justify-start ml-10 mb-4 space-x-4">
               <input

@@ -10,8 +10,47 @@ export default function PlayerProfile() {
   const {playerId} = useParams()
   const [playerInfo, setPlayerInfo] = useState([])
   const [games, setGames] = useState([])
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
   useEffect(() => {
-    async function fetchTeamData() {
+    checkAdminAccess()
+  }, [])
+
+  const checkAdminAccess = async () => {
+    try {
+      const token = localStorage.getItem("userToken")
+
+      if (!token) {
+        router.push("/login")
+        return
+      }
+      console.log(token)
+      const response = await fetch("http://127.0.0.1:8000/api/verifyAdmin", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        if (data.is_admin) {
+          setIsAdmin(true)
+        } else {
+          setIsAdmin(false)
+        }
+      } 
+    } catch (error) {
+      console.error("Error checking admin access:", error)
+      router.push("/")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+  useEffect(() => {
+    async function fetchPlayerData() {
       try {
         const response = await fetch(`http://127.0.0.1:8000/api/getPlayersResults/${playerId}`)
         if (!response.ok) throw new Error("Failed to fetch player data")
@@ -25,7 +64,7 @@ export default function PlayerProfile() {
       }
     }
 
-    fetchTeamData()
+    fetchPlayerData()
   }, [playerId])
 
   return (
@@ -47,7 +86,13 @@ export default function PlayerProfile() {
             </div>
             <div className="flex-grow ml-8">
               <div className="text-4xl text-white mb-2">{playerInfo.in_game_name}</div>
-              <div className="text-2xl text-white">{playerInfo.team_name}</div>
+              <div className="text-4xl text-white mb-2">{playerInfo.name + " " + playerInfo.last_name}</div>
+              <div className="text-2xl text-white mb-2">{playerInfo.team_name}</div>
+              { isAdmin && (
+                <Link href={`/edit-player/${playerInfo.id}`} className="bg-white py-2 rounded-md hover:bg-slate-300 transition-colors text-purple-500 px-4 ">
+                  Edit player
+                </Link>
+              )}
             </div>
           </div>
         </div>

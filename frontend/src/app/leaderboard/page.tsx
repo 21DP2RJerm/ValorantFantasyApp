@@ -13,7 +13,6 @@ export default function Leaderboard() {
   const [tournaments, setTournaments] = useState([])
   const [selectedTournament, setSelectedTournament] = useState("")
 
-  // Fetch tournaments when component mounts
   useEffect(() => {
     async function fetchTournaments() {
       try {
@@ -41,9 +40,8 @@ export default function Leaderboard() {
     }
 
     fetchTournaments()
-  }, []) // Empty dependency array means this runs once on mount
+  }, []) 
 
-  // Fetch fantasy teams when tournament is selected
   useEffect(() => {
     async function fetchFantasyTeams() {
       if (!selectedTournament) {
@@ -75,12 +73,11 @@ export default function Leaderboard() {
     }
 
     fetchFantasyTeams()
-  }, [selectedTournament]) // This runs whenever selectedTournament changes
+  }, [selectedTournament]) 
 
-  // Handle tournament selection
   const handleTournamentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedTournament(e.target.value)
-    setError("") // Clear any previous errors
+    setError("") 
   }
 
   return (

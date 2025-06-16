@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\GameResults;
+use App\Models\PlayerResults;
+use App\Models\Players;
 use App\Models\TeamResult;
 use App\Models\Teams;
 use Illuminate\Support\Carbon;
@@ -14,6 +16,7 @@ class TournamentController extends Controller
 {
     public function createTournament(Request $request)
     {
+     
         $request->validate([
             'name' => 'required',
             'type' => 'required',
@@ -25,7 +28,6 @@ class TournamentController extends Controller
 
         $imageName = time() . '.' . $request->file('logo')->extension(); 
         $request->file('logo')->move(public_path('storage/tournaments'), $imageName);
-
         $tournament = new Tournaments();
         $tournament->name = $request->name;
         $tournament->type = $request->type;
@@ -35,6 +37,14 @@ class TournamentController extends Controller
         $tournament->logo = $imageName;
         $tournament->save();
 
+        $i = 0;
+        foreach($request->teams as $team){
+            TournamentTeam::create([
+                'tournament_id' => $tournament->id,
+                'team_id' => $team,
+            ]);
+            $i = $i + 1;
+        }
         return response()->json($tournament);
     }
 
@@ -100,11 +110,37 @@ class TournamentController extends Controller
         $tournament = Tournaments::where('start_date', '<=', Carbon::now())->whereHas('games')
             ->inRandomOrder()
             ->first();
-        
-        $tournamentTeams = TournamentTeam::where('tournament_id', $tournament->id)->pluck('team_id')->toArray();
 
         $games = GameResults::where('tournament_id', $tournament->id)->latest()->take(3)->get();
+        $gameIds = $games->pluck('id');
+        $playerResults = PlayerResults::whereIn('game_result_id', $gameIds)->get();
+        $grouped = $playerResults->groupBy('player_id');
 
+        $bestPlayer = null;
+        $bestRatio = -1;
+
+        foreach ($grouped as $playerId => $results) {
+            $totalKills = $results->sum('kills');
+            $totalDeaths = $results->sum('deaths');
+    
+            $ratio = $totalDeaths > 0 ? $totalKills / $totalDeaths : $totalKills;
+    
+            if ($ratio > $bestRatio) {
+                $bestRatio = $ratio;
+                $bestPlayer = $playerId;
+            }
+        }
+    
+        $topPlayer = null;
+        if ($bestPlayer) {
+            $player = Players::find($bestPlayer);
+            $topPlayer = [
+                'id' => $player->id,
+                'name' => $player->in_game_name,
+                'image' => $player->logo, // adjust if you use avatar/profile_picture
+                'kills_deaths_ratio' => round($bestRatio, 2)
+            ];
+        }
 
         $gamesData = [];
         foreach ($games as $game) {
@@ -129,7 +165,8 @@ class TournamentController extends Controller
 
         return response()->json([
             'tournament' => $tournament,
-            'games' => $gamesData
+            'games' => $gamesData,
+            'top_player' => $topPlayer
         ]);
     }
 }

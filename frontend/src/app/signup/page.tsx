@@ -12,10 +12,9 @@ export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [error, setError] = useState('');
+    const [error, setError] = useState<string | boolean>(false);
 
     const validateEmail = (email: string) => {
-        // Simple regex for email validation
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return re.test(String(email).toLowerCase());
       };
@@ -45,7 +44,7 @@ export default function Login() {
     
           console.log("Registration successful:", response.data)
           localStorage.setItem("userToken", response.data.token)
-          router.push("/home") // Redirect after success
+          router.push("/login")
         } catch (error) {
           console.error("Registration failed:", error)
           setError(error.response?.data?.message || "Registration failed, please try again.")
@@ -55,6 +54,9 @@ export default function Login() {
 
     return (
         <div className="relative flex justify-center items-center h-screen w-screen space ">
+        {error && (
+            <div className="bg-red-100 border relative text-center border-red-400 text-red-700 px-4 py-3 rounded mb-4 w-[50%]">{error}</div>
+          )}
             <Image
                 alt="Background"
                 fill={true}
@@ -83,7 +85,7 @@ export default function Login() {
                         className="z-0"
                         priority
                 />
-                 {error && <p className="text-red-500 mt-4">{error}</p>} {/* Display error message */}
+                 {error && <p className="text-red-500 mt-4">{error}</p>}
                 <input
                     type="username"
                     name="name"

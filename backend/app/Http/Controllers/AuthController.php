@@ -19,4 +19,13 @@ class AuthController extends Controller
             ]
         ]);
     }
+    public function verifyAdmin(Request $request)
+{
+    $user = $request->user(); 
+    
+    return response()->json([
+        'is_admin' => $user->admin, 
+        'user' => $user
+    ]);
+}
 }

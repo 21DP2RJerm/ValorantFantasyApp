@@ -11,7 +11,7 @@ export default function MatchResults() {
 
   const [currentStep, setCurrentStep] = useState(1)
 
-  // Data states
+
   const [tournaments, setTournaments] = useState([])
   const [teams, setTeams] = useState([])
   const [selectedTournament, setSelectedTournament] = useState("")
@@ -24,14 +24,50 @@ export default function MatchResults() {
   const [team1Score, setTeam1Score] = useState("")
   const [team2Score, setTeam2Score] = useState("")
   const [gameName, setGameName] = useState("")
-  // Loading states
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [loadingTournaments, setLoadingTournaments] = useState(false)
   const [loadingTeams, setLoadingTeams] = useState(false)
   const [loadingPlayers, setLoadingPlayers] = useState(false)
 
-  // Fetch tournaments on component mount
   useEffect(() => {
+    const checkAdminAccess = async () => {
+      try {
+        const token = localStorage.getItem("userToken")
+  
+        if (!token) {
+          router.push("/login")
+          return
+        }
+        console.log(token)
+        const response = await fetch("http://127.0.0.1:8000/api/verifyAdmin", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        })
+  
+        if (response.ok) {
+          const data = await response.json()
+          if (data.is_admin) {
+            setIsAdmin(true)
+          } else {
+            setIsAdmin(false)
+            router.push("/")
+          }
+        } else {
+          router.push("/home")
+        }
+      } catch (error) {
+        console.error("Error checking admin access:", error)
+        router.push("/")
+      } finally {
+        setIsLoading(false)
+      }
+    }
     async function fetchTournaments() {
       setLoadingTournaments(true)
       try {
@@ -41,16 +77,15 @@ export default function MatchResults() {
         setTournaments(data)
       } catch (error) {
         console.error("Error fetching tournaments:", error)
-        alert("Failed to load tournaments")
+        setError("Failed to load tournaments")
       } finally {
         setLoadingTournaments(false)
       }
     }
-
+    checkAdminAccess()
     fetchTournaments()
   }, [])
 
-  // Fetch teams when tournament is selected
   useEffect(() => {
     if (!selectedTournament) return
 
@@ -64,7 +99,7 @@ export default function MatchResults() {
         setTeams(data)
       } catch (error) {
         console.error("Error fetching teams:", error)
-        alert("Failed to load teams")
+        setError("Failed to load teams")
       } finally {
         setLoadingTeams(false)
       }
@@ -73,7 +108,7 @@ export default function MatchResults() {
     fetchTeams()
   }, [selectedTournament])
 
-  // Fetch players when teams are selected
+
   useEffect(() => {
     if (!selectedTeam1 && !selectedTeam2) return
 
@@ -81,14 +116,12 @@ export default function MatchResults() {
       setLoadingPlayers(true)
 
       try {
-        // Fetch team 1 players if selected
         if (selectedTeam1) {
           const response1 = await fetch(`http://127.0.0.1:8000/api/getTeamInfo/${selectedTeam1}`)
           if (!response1.ok) throw new Error("Failed to fetch team 1 players")
           const data1 = await response1.json()
           setTeam1Players(data1.players)
 
-          // Initialize stats for team 1 players
           setTeam1Stats(
             data1.players.map((player: Player) => ({
               playerId: player.id,
@@ -100,14 +133,12 @@ export default function MatchResults() {
           )
         }
 
-        // Fetch team 2 players if selected
         if (selectedTeam2) {
           const response2 = await fetch(`http://127.0.0.1:8000/api/getTeamInfo/${selectedTeam2}`)
           if (!response2.ok) throw new Error("Failed to fetch team 2 players")
           const data2 = await response2.json()
           setTeam2Players(data2.players)
 
-          // Initialize stats for team 2 players
           setTeam2Stats(
             data2.players.map((player: Player) => ({
               playerId: player.id,
@@ -120,7 +151,7 @@ export default function MatchResults() {
         }
       } catch (error) {
         console.error("Error fetching players:", error)
-        alert("Failed to load players")
+        setError("Failed to load players")
       } finally {
         setLoadingPlayers(false)
       }
@@ -129,7 +160,6 @@ export default function MatchResults() {
     fetchPlayers()
   }, [selectedTeam1, selectedTeam2])
 
-  // Handle tournament selection
   const handleTournamentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedTournament(e.target.value)
     setSelectedTeam1("")
@@ -141,7 +171,7 @@ export default function MatchResults() {
     setTeam2Stats([])
   }
 
-  // Handle team selection
+
   const handleTeam1Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedTeam1(e.target.value)
   }
@@ -150,53 +180,49 @@ export default function MatchResults() {
     setSelectedTeam2(e.target.value)
   }
 
-  // Handle stat changes for team 1
+
   const handleTeam1StatChange = (playerId: number, field: "kills" | "deaths" | "assists", value: number) => {
     setTeam1Stats((prevStats) =>
       prevStats.map((stat) => (stat.playerId === playerId ? { ...stat, [field]: value } : stat)),
     )
   }
 
-  // Handle stat changes for team 2
   const handleTeam2StatChange = (playerId: number, field: "kills" | "deaths" | "assists", value: number) => {
     setTeam2Stats((prevStats) =>
       prevStats.map((stat) => (stat.playerId === playerId ? { ...stat, [field]: value } : stat)),
     )
   }
 
-  // Navigate to next step
+
   const nextStep = () => {
     if (currentStep === 1 && !selectedTournament) {
-      alert("Please select a tournament")
+      setError("Please select a tournament")
       return
     }
 
     if (currentStep === 2 && (!selectedTeam1 || !selectedTeam2)) {
-      alert("Please select both teams")
+      setError("Please select both teams")
       return
     }
 
     setCurrentStep((prev) => prev + 1)
   }
 
-  // Navigate to previous step
+
   const prevStep = () => {
     setCurrentStep((prev) => prev - 1)
   }
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    // Validate that we have stats for all players
     if (team1Stats.length === 0 || team2Stats.length === 0) {
-      alert("Please ensure all player statistics are entered")
+      setError("Please ensure all player statistics are entered")
       return
     }
 
     setLoading(true)
 
-    // Prepare data for submission
     const matchData = {
       tournamentId: selectedTournament,
       team1Id: selectedTeam1,
@@ -216,22 +242,29 @@ export default function MatchResults() {
         }
       );
     
-      // No need to check response.ok – if we're here, it's a 2xx
-      alert("Match results submitted successfully!");
+      setError("Match results submitted successfully!");
     } catch (error) {
       console.error("Error submitting match results:", error);
-      alert("Failed to submit match results");
+      setError("Failed to submit match results");
     } finally {
       setLoading(false);
     }
   }
 
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen w-screen bg-gray-900">
+        <div className="text-white text-2xl">Verifying access...</div>
+      </div>
+    )
+  }
   return (
     <div className="relative min-h-screen w-full bg-purple-900">
       <Navigation />
 
       <div className="container mx-auto py-10 px-4">
-        <div className="max-w-3xl mx-auto bg-purple-500 p-8 rounded-lg">
+        <div className="max-w-3xl mx-auto bg-purple-500 p-8 rounded-lg shadow-2xl">
+
           <h1 className="text-2xl font-bold text-white mb-6 text-center">Match Results Entry</h1>
 
           <div className="flex justify-between mb-8">
@@ -255,7 +288,7 @@ export default function MatchResults() {
               <div className="space-y-4">
                 <div className="flex flex-row gap-4">
                   <div className="flex-1">
-                    <label htmlFor="tournament" className="text-white mb-2 block">
+                    <label className="text-white mb-2 block">
                       Select Tournament
                     </label>
                     <select
@@ -276,7 +309,7 @@ export default function MatchResults() {
                   </div>
 
                   <div className="flex-1">
-                    <label htmlFor="gameName" className="text-white mb-2 block">
+                    <label className="text-white mb-2 block">
                       Game Name
                     </label>
                     <input
@@ -418,7 +451,7 @@ export default function MatchResults() {
                           required
                         />
                       </div>
-                      <div className="bg-purple-600 p-4 rounded-lg">
+                      <div className="bg-purple-600 p-4 rounded-lg shadow-2xl">
                         <div className="grid grid-cols-4 gap-2 font-bold text-white mb-2 text-center">
                           <div>Player</div>
                           <div>Kills</div>
@@ -479,7 +512,7 @@ export default function MatchResults() {
                           required
                         />                        
                       </div>
-                      <div className="bg-purple-600 p-4 rounded-lg">
+                      <div className="bg-purple-600 p-4 rounded-lg shadow-2xl">
                         <div className="grid grid-cols-4 gap-2 font-bold text-white mb-2 text-center">
                           <div>Player</div>
                           <div>Kills</div>

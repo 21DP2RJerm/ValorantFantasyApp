@@ -118,10 +118,77 @@ class TeamController extends Controller
         $player->in_game_name = $request->in_game_name;
         $player->team_id = $request->team_id;
         $player->logo = $imageName;
-        $player->points = 0;
         $player->save();
     
         return response()->json($player);
+    }
+    public function getPlayer($id)
+    {
+        $player = Players::findOrFail($id);
+        return response()->json($player);
+    }
+    public function getTeam($id)
+    {
+        $team = Teams::findOrFail($id);
+        return response()->json($team);
+    }
+    public function updatePlayer(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required',
+            'last_name' => 'required',
+            'in_game_name' => 'required',
+            'team_id' => 'required',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif',
+        ]);
+
+        $player = Players::findOrFail($id);
+        $player->name = $request->name;
+        $player->last_name = $request->last_name;
+        $player->in_game_name = $request->in_game_name;
+        $player->team_id = $request->team_id;
+
+        if ($request->hasFile('logo')) {
+            $oldPath = public_path('storage/players/' . $player->logo);
+            if (file_exists($oldPath)) {
+                unlink($oldPath);
+            }
+
+            $imageName = time() . '.' . $request->file('logo')->extension();
+            $request->file('logo')->move(public_path('storage/players'), $imageName);
+            $player->logo = $imageName;
+        }
+
+        $player->save();
+
+        return response()->json($player);
+    }
+    public function updateTeam(Request $request, $id)
+    {
+
+        $request->validate([
+            'name' => 'required',
+            'region' => 'required',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+        
+        $team = Teams::findOrFail($id);
+
+        if($request->logo){
+            $oldPath = public_path('storage/teams/' . $team->logo);
+            if (file_exists($oldPath)) {
+                unlink($oldPath);
+            }
+            $imageName = time() . '.' . $request->file('logo')->extension(); 
+            $request->file('logo')->move(public_path('storage/teams'), $imageName);
+            $team->logo = $imageName;
+        }
+
+        $team->name = $request->name;
+        $team->region = $request->region;
+        $team->save();
+
+        return response()->json($team);
     }
     public function getTeamInfo($teamId)
     {

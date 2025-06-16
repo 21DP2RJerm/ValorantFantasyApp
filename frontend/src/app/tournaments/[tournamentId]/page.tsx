@@ -37,10 +37,7 @@ export default function Tournament() {
 
       <div className="absolute right-0 flex justify-center items-start h-full w-[85%] bg-gray-900 pt-20">
         <div className="relative w-[70%] h-[60%] bg-purple-700 rounded-lg border-8 border-white flex flex-col">
-          {/* Tournament Info with Background Image */}
           <div className="relative flex items-center p-6 h-[30%] overflow-hidden rounded-t-lg">
-            {/* Background Image */}
-            {tournament.logo && (
               <div className="absolute inset-0">
                 <Image
                   src={`http://127.0.0.1:8000/storage/tournaments/${tournament.logo}`}
@@ -48,12 +45,8 @@ export default function Tournament() {
                   fill
                   style={{ objectFit: "cover" }}
                 />
-                {/* Dark overlay for better text readability */}
                 <div className="absolute inset-0 bg-black bg-opacity-50"></div>
               </div>
-            )}
-
-         
                       {tournament.type == "Masters" && (
                         <Image
                           src={"/masters.png"}
@@ -98,13 +91,19 @@ export default function Tournament() {
                           }}
                         />
                       )}
-            <div className="relative z-10 flex-grow ml-8">
-              <div className="text-4xl text-white mb-2 font-bold">{tournament.name}</div>
-              <div className="text-2xl text-white">{tournament.location}</div>
+            <div className="relative flex w-full justify-between">
+              <div className="relative ">
+                <div className="text-4xl text-white mb-2 font-bold">{tournament.name}</div>
+                <div className="text-2xl text-white">{tournament.location}</div>
+              </div>
+              <div className="relative ">
+                <div className="text-2xl text-white mb-2">{tournament.start_date}</div>
+                <div className="text-2xl text-white">{tournament.end_date}</div>
+              </div>
             </div>
+
           </div>
 
-          {/* Teams Grid */}
           <div className="flex-grow border-t-4 border-white rounded-b-lg p-6 overflow-y-auto">
             <div className="grid grid-cols-8 gap-4">
               {teams.length > 0 ? (
@@ -136,7 +135,8 @@ export default function Tournament() {
         <div className="relative w-[20%] h-[60%] bg-purple-700 rounded-lg border-8 ml-10 border-white flex flex-col">
           {games.length> 0 ?(
             games.map((game, index) => (
-              <div className="relative w-full h-1/3 border-2 items-center border-white flex flex-row justify-between">
+              <div className="relative w-full h-1/3 border-2 items-center border-white flex flex-row justify-between"
+                key={game.id}>
                 <div className="relative flex flex-col justify-between">
                     <Image
                       src={`http://127.0.0.1:8000/storage/teams/${game.results[0].team_logo}`}

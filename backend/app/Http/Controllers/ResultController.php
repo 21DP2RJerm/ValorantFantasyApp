@@ -61,7 +61,7 @@ class ResultController extends Controller
         foreach ($request->playerStats as $playerStat) {
             PlayerResults::create([
                 'game_result_id' => $gameResult->id,
-                'player_id'      => $playerStat['playerId'], // use keys from frontend exactly
+                'player_id'      => $playerStat['playerId'], 
                 'kills'          => $playerStat['kills'],
                 'assists'        => $playerStat['assists'],
                 'deaths'         => $playerStat['deaths'],

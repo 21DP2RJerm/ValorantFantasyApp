@@ -4,10 +4,12 @@ import Image from "next/image"
 import Link from "next/link"
 import api from "axios"
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 
 export default function Navigation() {
   const [admin, setAdmin] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
+  const router = useRouter()
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -20,7 +22,6 @@ export default function Navigation() {
               Accept: "application/json",
             },
           })
-          // Set the admin status from the user object
           setAdmin(response.data.data.user.admin)
           console.log(response.data.data.user.admin)
         }
@@ -30,7 +31,6 @@ export default function Navigation() {
         }
         console.error("Profile fetch failed:", error)
       } finally {
-        // Set loading to false regardless of success or failure
         setLoading(false)
       }
     }
@@ -38,7 +38,12 @@ export default function Navigation() {
     fetchProfile()
   }, [])
 
-  // Return null when loading
+  const handleSignOut = async () => {
+      localStorage.removeItem("userToken")
+
+      router.push("/")
+
+  }
   if (loading) {
     return(
         <div className="absolute bg-purple-900 h-screen w-[15%] left-0 flex justify-center items-center border-r-8 border-white">
@@ -56,14 +61,14 @@ export default function Navigation() {
   }
 
   return (
-    <div className="absolute bg-purple-900 h-screen w-[15%] left-0 flex justify-center items-center border-r-8 border-white">
+    <div className="absolute bg-purple-900 flex-col h-screen w-[15%] left-0 flex justify-center items-center border-r-8 border-white">
       <Image
         alt="Logo"
         width={200}
         height={200}
         src="/logo.png"
         style={{ objectFit: "contain" }}
-        className="z-0 m-10 top-0 absolute"
+        className="z-0 m-10 relative"
         priority
       />
       <div className="w-[100%] h-100% relative flex-col justify-center items-center grid grid-cols-1">
@@ -90,6 +95,12 @@ export default function Navigation() {
             Input Scores
           </Link>
         )}
+        <button
+          onClick={handleSignOut}
+          className="relative p-5 col-span-1 text-2xl text-white border-b text-center border-purple-800 hover:bg-purple-800 transition-colors w-full"
+        >
+          Sign Out
+        </button>
       </div>
     </div>
   )

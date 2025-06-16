@@ -56,12 +56,10 @@ export default function MyTeams() {
           <>
             {teams.length > 0 ? (
               teams.map((team) => (
-                <Link
-                  href={`/myteams/${team.fantasy_team_id}`}
+                <div
                   key={team.fantasy_team_id}
                   className="relative w-[90%] h-[150px] bg-purple-900 rounded-lg border-8 border-white flex flex-row mb-6"
                 >
-                  {/* Players Row */}
                   <div className="flex items-center justify-start p-6 h-full w-[80%]">
                     {team.players &&
                       team.players.map((player, index) => (
@@ -80,20 +78,19 @@ export default function MyTeams() {
                       ))}
                   </div>
 
-                  {/* Tournament Info */}
-                  <div className="w-[35%] flex items-center justify-center">
-                    <p className="text-white text-2xl font-bold pr-10">Points: {team.points || 0}</p>
-                    <p className="text-white text-2xl font-bold">
+                <div className="w-full flex items-center justify-end space-x-10">
+                    <p className="text-white text-2xl font-bold w-[20%] text-center">Placement: {team.place || 0}</p>
+                    <p className="text-white text-2xl font-bold w-[20%] text-center">Points: {team.points || 0}</p>
+                    <p className="text-white text-2xl font-bold w-[40%] pr-5 text-center">
                       {team.tournament_name || `Tournament ${team.tournament_id}`}
                     </p>
-                  </div>
-                </Link>
+                </div>
+                </div>
               ))
             ) : (
               <div className="text-white text-xl mb-6">You haven't created any teams yet.</div>
             )}
 
-            {/* Add New Team Button */}
             <div className="relative w-[90%] h-[150px] bg-purple-900 rounded-lg border-8 border-white flex flex-row">
               <Link href="/myteams/createFantasyTeam" className="w-full flex flex-col items-center justify-center">
                 <div className="w-full flex flex-col items-center justify-center cursor-pointer">

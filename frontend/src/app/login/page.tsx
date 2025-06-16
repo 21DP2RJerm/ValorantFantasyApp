@@ -11,7 +11,7 @@ export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);  // New loading state
+    const [loading, setLoading] = useState(false);  
     const router = useRouter();
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -35,7 +35,7 @@ export default function Login() {
     
           console.log("Login successful:", response.data)
           localStorage.setItem("userToken", response.data.token)
-          router.push("/home") // Redirect after success
+          router.push("/home") 
         } catch (error) {
           console.error("Login failed:", error)
           setError(error.response?.data?.message || "Login failed, please try again.")

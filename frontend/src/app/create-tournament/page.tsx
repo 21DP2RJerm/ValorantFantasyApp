@@ -3,13 +3,12 @@
 import Image from "next/image"
 import type React from "react"
 import { useEffect, useState, useRef } from "react"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
 import api from "axios"
 import Navigation from "../navigation"
 
-
 export default function CreateTournament() {
+  
   const [name, setName] = useState("")
   const [type, setType] = useState("")
   const [start_date, setStartDate] = useState("")
@@ -17,115 +16,159 @@ export default function CreateTournament() {
   const [location, setLocation] = useState("")
   const [loading, setLoading] = useState(false)
   const [region, setRegion] = useState("")
-  const [logo, setLogo] =  useState<File | null>(null)
+  const [logo, setLogo] = useState<File | null>(null)
   const [teams, setTeams] = useState([])
   const [selectedTeams, setSelectedTeams] = useState([])
   const [error, setError] = useState<string | null>(null)
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
   const fileInputRef = useRef<HTMLInputElement | null>(null)
+
+
+  useEffect(() => {
+    checkAdminAccess()
+  }, [])
+
+  const checkAdminAccess = async () => {
+    try {
+      const token = localStorage.getItem("userToken")
+
+      if (!token) {
+        router.push("/login")
+        return
+      }
+      console.log(token)
+      const response = await fetch("http://127.0.0.1:8000/api/verifyAdmin", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        if (data.is_admin) {
+          setIsAdmin(true)
+        } else {
+          setIsAdmin(false)
+          router.push("/")
+        }
+      } else {
+        router.push("/home")
+      }
+    } catch (error) {
+      console.error("Error checking admin access:", error)
+      router.push("/")
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setLogo(e.target.files[0])
     }
   }
-  useEffect(() => {
-    async function fetchTeams() {
-      try {
-        setLoading(true)
-        const response = await fetch("http://127.0.0.1:8000/api/allTeams", {
-          headers: {
-            Accept: "application/json",
-          },
-        })
-        const data = await response.json()
-        console.log(data)
-        setTeams(data)
-      } catch (error) {
-        console.error("Error fetching teams:", error)
-        setError("Failed to load teams")
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchTeams()
-  }, [])
 
-  // Filter teams by selected region
+  useEffect(() => {
+    if (isAdmin) {
+      fetchTeams()
+    }
+  }, [isAdmin])
+
+  async function fetchTeams() {
+    try {
+      setLoading(true)
+      const token = localStorage.getItem("userToken")
+      const response = await fetch("http://127.0.0.1:8000/api/allTeams", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      })
+      const data = await response.json()
+      console.log(data)
+      setTeams(data)
+    } catch (error) {
+      console.error("Error fetching teams:", error)
+      setError("Failed to load teams")
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const filteredTeams = region === "" ? teams : teams.filter((team) => team.region === region)
 
-  // Toggle team selection
-  const toggleTeamSelection = (team: Team) => {
+  const toggleTeamSelection = (team: any) => {
     if (selectedTeams.some((selectedTeam) => selectedTeam.id === team.id)) {
-      // If team is already selected, remove it
       setSelectedTeams(selectedTeams.filter((selectedTeam) => selectedTeam.id !== team.id))
     } else {
-      // If team is not selected, add it
       setSelectedTeams([...selectedTeams, team])
     }
   }
 
-  // Check if a team is selected
   const isTeamSelected = (teamId: number) => {
     return selectedTeams.some((team) => team.id === teamId)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-  
-    // client-side required checks
+    e.preventDefault()
+
     if (!name || !type || !start_date || !end_date || !location || !logo) {
-      alert("Please fill all required fields!");
-      return;
+      setError("Please fill all required fields!")
+      return
     }
     if (selectedTeams.length === 0) {
-      alert("Please select at least one team!");
-      return;
+      setError("Please select at least one team!")
+      return
     }
-  
-    setLoading(true);
-    setError(null);
-  
-    // Build FormData
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("type", type);
-    formData.append("start_date", start_date);
-    formData.append("end_date", end_date);
-    formData.append("location", location);
-    formData.append("logo", logo);                      // ← File goes here
-    // for teams, you can either JSON-encode:
-    formData.append("teams", JSON.stringify(selectedTeams.map(t => t.id)));
-    // —or append each one as teams[]:
-    // selectedTeams.forEach(t => formData.append("teams[]", t.id.toString()));
-  
-    try {
-      const response = await api.post(
-        "http://127.0.0.1:8000/api/createTournament",
-        formData,
-        {
-          headers: {
 
-            Accept: "application/json",
-          },
-        }
-      );
-  
-      alert("Tournament created successfully!");
-      router.push("/home");
+    setLoading(true)
+    setError(null)
+
+    const formData = new FormData()
+    formData.append("name", name)
+    formData.append("type", type)
+    formData.append("start_date", start_date)
+    formData.append("end_date", end_date)
+    formData.append("location", location)
+    formData.append("logo", logo)
+    selectedTeams.forEach((team) => {formData.append("teams[]", team.id)})
+
+    try {
+      const token = localStorage.getItem("userToken")
+      const response = await api.post("http://127.0.0.1:8000/api/createTournament", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      })
+
+      alert("Tournament created successfully!")
+      router.push("/home")
     } catch (err: any) {
-      console.error("Tournament creation failed:", err);
-      setError(err.response?.data?.message || err.message);
-      alert(err.response?.data?.message || "Failed to create tournament");
+      console.error("Tournament creation failed:", err)
+      setError(err.response?.data?.message || err.message)
+      alert(err.response?.data?.message || "Failed to create tournament")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen w-screen bg-gray-900">
+        <div className="text-white text-2xl">Verifying access...</div>
+      </div>
+    )
+  }
 
   return (
     <div className="relative flex justify-center items-center h-screen w-screen bg-gray-900">
-      <Navigation/>
+      <Navigation />
 
       <div className="flex justify-center align-center items-start w-[85%] absolute right-0 h-full">
         <div className="flex flex-col items-center z-1 relative bg-purple-500 p-10 rounded-lg m-10 w-[30%] h-[80%]">
@@ -194,14 +237,14 @@ export default function CreateTournament() {
               <p className="font-semibold mb-2">Selected Teams: {selectedTeams.length}</p>
             </div>
             <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
-              <button
-                type="button"
-                className="bg-white px-6 py-2 rounded-md hover:bg-slate-300 transition-colors text-purple-500 mt-1 mb-6"
-                disabled={loading}
-                onClick={() => fileInputRef.current?.click()}
-              >
-                Upload Player Logo
-              </button>
+            <button
+              type="button"
+              className="bg-white px-6 py-2 rounded-md hover:bg-slate-300 transition-colors text-purple-500 mt-1 mb-6"
+              disabled={loading}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              Upload Tournament Logo
+            </button>
             {logo && <p className="text-white">Selected File: {logo.name}</p>}
             <button
               type="submit"
