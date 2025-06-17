@@ -87,9 +87,6 @@ export default function Navigation() {
         <Link href="/tournaments" className="relative p-5 col-span-1 text-2xl text-white border-b text-center border-purple-800 hover:bg-purple-800 transition-colors">
           Tournaments
         </Link>
-        <Link href="/profile" className="relative p-5 col-span-1 text-2xl text-white border-b text-center border-purple-800 hover:bg-purple-800 transition-colors">
-          Profile
-        </Link>
         {admin === 1 && (
           <Link href="/create-results" className="relative p-5 col-span-1 text-2xl text-white border-b text-center border-purple-800 hover:bg-purple-800 transition-colors">
             Input Scores

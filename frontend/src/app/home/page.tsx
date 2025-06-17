@@ -52,7 +52,7 @@ export default function Home() {
           <div className="flex-shrink-0">
             <Image
               src={`http://127.0.0.1:8000/storage/players/${topPlayer.image}`}
-              alt={topPlayer.name}
+              alt={topPlayer.name || "Top player"}
               width={150}
               height={150}
               style={{ objectFit: "cover" }}
