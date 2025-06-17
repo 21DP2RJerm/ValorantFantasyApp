@@ -74,7 +74,7 @@ export default function Team() {
       <Navigation/>
 
       <div className="absolute right-0 flex justify-center items-start h-full w-[85%] bg-gray-900 pt-20">
-        <div className="relative w-[70%] h-[60%] bg-purple-700 rounded-lg border-8 border-white flex flex-col">
+        <div className="relative w-[70%] h-[80%] bg-purple-700 rounded-lg border-8 border-white flex flex-col">
           <div className="flex items-center p-6">
             <div className="flex-shrink-0">
               <Image

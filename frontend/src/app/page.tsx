@@ -12,16 +12,21 @@ export default function Home() {
         className="z-0"
         priority
       />
-      <Image
-        alt="Boaster"
-        src="/omen2.webp"
-        width={1400}
-        height={1200}
-        style={{ objectFit: "contain" }}
-        className="z-10 absolute top-[17%] left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-        priority
-      />
-      <div className="flex flex-col w-1/2 h-auto py-8 border-4 border-cyan-50 bg-purple-500 relative z-10 rounded-md items-center justify-center space-y-6 top-[30%]">
+      <div className="z-10 absolute top-[17%] left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <div className="relative w-[480px] h-[550px] sm:w-[550px] sm:h-[650px] md:w-[600px] md:h-[700px] lg:w-[650px] lg:h-[750px] xl:w-[700px] xl:h-[800px]">
+          <Image alt="omen" src="/omen2.webp" fill className="object-contain" priority />
+        </div>
+      </div>
+      {/* <Image
+      //   alt="omen"
+      //   src="/omen2.webp"
+      //   width={1400}
+      //   height={1200}
+      //   style={{ objectFit: "contain" }}
+      //   className="z-10 absolute top-[17%] left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+      //   priority
+      // /> */}
+      <div className="flex flex-col w-1/2 h-auto py-8 border-4 border-cyan-50 bg-purple-500 relative z-10 rounded-md items-center justify-center space-y-6 top-[25%]">
         <h1 className="text-center text-4xl text-white px-4">
           Join the biggest Valorant Fantasy community out there today!
         </h1>

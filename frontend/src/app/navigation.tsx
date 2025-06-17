@@ -39,85 +39,105 @@ export default function Navigation() {
   }, [])
 
   const handleSignOut = async () => {
-      localStorage.removeItem("userToken")
-
-      router.push("/")
-
+    localStorage.removeItem("userToken")
+    router.push("/")
   }
+
   if (loading) {
-    return(
+    return (
       <div className="absolute bg-purple-900 flex-col h-screen w-[15%] left-0 flex justify-start items-center border-r-8 border-white">
-      <Image
-        alt="Logo"
-        width={200}
-        height={200}
-        src="/logo.png"
-        style={{ objectFit: "contain" }}
-        className="z-0 m-10 relative"
-        priority
-      />
-      <div className="w-[100%] h-100% relative flex-col justify-center items-center grid grid-cols-1">
-        <Link href="/home" className="relative p-5 w-[100%] col-span-1 text-2xl text-white border-b border-t text-center border-purple-800 hover:bg-purple-800 transition-colors">
-          Home
-        </Link>
-        <Link href="/leaderboard" className="relative p-5 col-span-1 text-2xl text-white border-b text-center border-purple-800 hover:bg-purple-800 transition-colors">
-          Leaderboard
-        </Link>
-        <Link href="/myteams" className="relative p-5 col-span-1 text-2xl text-white border-b text-center border-purple-800 hover:bg-purple-800 transition-colors">
-          My Teams
-        </Link>
-        <Link href="/players" className="relative p-5 col-span-1 text-2xl text-white border-b text-center border-purple-800 hover:bg-purple-800 transition-colors">
-          Players
-        </Link>
-        <Link href="/tournaments" className="relative p-5 col-span-1 text-2xl text-white border-b text-center border-purple-800 hover:bg-purple-800 transition-colors">
-          Tournaments
-        </Link>
-        <button
-          onClick={handleSignOut}
-          className="relative p-5 col-span-1 text-2xl text-white border-b text-center border-purple-800 hover:bg-purple-800 transition-colors w-full"
-        >
-          Sign Out
-        </button>
+        <div className="relative w-20 h-20 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 m-4 md:m-10">
+          <Image alt="Logo" src="/logo.png" fill className="object-contain" priority />
+        </div>
+        <div className="w-[100%] h-100% relative flex-col justify-center items-center grid grid-cols-1">
+          <Link
+            href="/home"
+            className="relative p-3 md:p-5 w-[100%] col-span-1 text-lg md:text-2xl text-white border-b border-t text-center border-purple-800 hover:bg-purple-800 transition-colors"
+          >
+            Home
+          </Link>
+          <Link
+            href="/leaderboard"
+            className="relative p-3 md:p-5 col-span-1 text-lg md:text-2xl text-white border-b text-center border-purple-800 hover:bg-purple-800 transition-colors"
+          >
+            Leaderboard
+          </Link>
+          <Link
+            href="/myteams"
+            className="relative p-3 md:p-5 col-span-1 text-lg md:text-2xl text-white border-b text-center border-purple-800 hover:bg-purple-800 transition-colors"
+          >
+            My Teams
+          </Link>
+          <Link
+            href="/players"
+            className="relative p-3 md:p-5 col-span-1 text-lg md:text-2xl text-white border-b text-center border-purple-800 hover:bg-purple-800 transition-colors"
+          >
+            Players
+          </Link>
+          <Link
+            href="/tournaments"
+            className="relative p-3 md:p-5 col-span-1 text-lg md:text-2xl text-white border-b text-center border-purple-800 hover:bg-purple-800 transition-colors"
+          >
+            Tournaments
+          </Link>
+          <button
+            onClick={handleSignOut}
+            className="relative p-3 md:p-5 col-span-1 text-lg md:text-2xl text-white border-b text-center border-purple-800 hover:bg-purple-800 transition-colors w-full"
+          >
+            Sign Out
+          </button>
+        </div>
       </div>
-    </div>
     )
   }
 
   return (
     <div className="absolute bg-purple-900 flex-col h-screen w-[15%] left-0 flex justify-start items-center border-r-8 border-white">
-      <Image
-        alt="Logo"
-        width={200}
-        height={200}
-        src="/logo.png"
-        style={{ objectFit: "contain" }}
-        className="z-0 m-10 relative"
-        priority
-      />
+      <div className="relative w-20 h-20 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 m-4 md:m-10">
+        <Image alt="Logo" src="/logo.png" fill className="object-contain" priority />
+      </div>
       <div className="w-[100%] h-100% relative flex-col justify-center items-center grid grid-cols-1">
-        <Link href="/home" className="relative p-5 w-[100%] col-span-1 text-2xl text-white border-b border-t text-center border-purple-800 hover:bg-purple-800 transition-colors">
+        <Link
+          href="/home"
+          className="relative p-3 md:p-5 w-[100%] col-span-1 text-lg md:text-2xl text-white border-b border-t text-center border-purple-800 hover:bg-purple-800 transition-colors"
+        >
           Home
         </Link>
-        <Link href="/leaderboard" className="relative p-5 col-span-1 text-2xl text-white border-b text-center border-purple-800 hover:bg-purple-800 transition-colors">
+        <Link
+          href="/leaderboard"
+          className="relative p-3 md:p-5 col-span-1 text-lg md:text-2xl text-white border-b text-center border-purple-800 hover:bg-purple-800 transition-colors"
+        >
           Leaderboard
         </Link>
-        <Link href="/myteams" className="relative p-5 col-span-1 text-2xl text-white border-b text-center border-purple-800 hover:bg-purple-800 transition-colors">
+        <Link
+          href="/myteams"
+          className="relative p-3 md:p-5 col-span-1 text-lg md:text-2xl text-white border-b text-center border-purple-800 hover:bg-purple-800 transition-colors"
+        >
           My Teams
         </Link>
-        <Link href="/players" className="relative p-5 col-span-1 text-2xl text-white border-b text-center border-purple-800 hover:bg-purple-800 transition-colors">
+        <Link
+          href="/players"
+          className="relative p-3 md:p-5 col-span-1 text-lg md:text-2xl text-white border-b text-center border-purple-800 hover:bg-purple-800 transition-colors"
+        >
           Players
         </Link>
-        <Link href="/tournaments" className="relative p-5 col-span-1 text-2xl text-white border-b text-center border-purple-800 hover:bg-purple-800 transition-colors">
+        <Link
+          href="/tournaments"
+          className="relative p-3 md:p-5 col-span-1 text-lg md:text-2xl text-white border-b text-center border-purple-800 hover:bg-purple-800 transition-colors"
+        >
           Tournaments
         </Link>
         {admin === 1 && (
-          <Link href="/create-results" className="relative p-5 col-span-1 text-2xl text-white border-b text-center border-purple-800 hover:bg-purple-800 transition-colors">
+          <Link
+            href="/create-results"
+            className="relative p-3 md:p-5 col-span-1 text-lg md:text-2xl text-white border-b text-center border-purple-800 hover:bg-purple-800 transition-colors"
+          >
             Input Scores
           </Link>
         )}
         <button
           onClick={handleSignOut}
-          className="relative p-5 col-span-1 text-2xl text-white border-b text-center border-purple-800 hover:bg-purple-800 transition-colors w-full"
+          className="relative p-3 md:p-5 col-span-1 text-lg md:text-2xl text-white border-b text-center border-purple-800 hover:bg-purple-800 transition-colors w-full"
         >
           Sign Out
         </button>

@@ -31,24 +31,24 @@ export default function Home() {
   return (
     <div className="relative flex justify-end items-center h-screen w-screen space bg-gray-900 pr-10">
       <Navigation />
-      <div className="relative w-[50%] h-[60%] bg-purple-700 rounded-lg border-8 mr-10 border-white flex flex-col text-center items-center">
-        <p className="text-4xl text-white text-center font-bold pt-5">Welcome to the Fantasy Valorant League</p>
+      <div className="relative w-[50%] h-[65%] bg-purple-700 rounded-lg border-8 mr-10 border-white flex flex-col text-center items-center">
+        <p className="sm:text-lg lg:text-2xl text-white text-center font-bold pt-5">Welcome to the Fantasy Valorant League</p>
         <div className="flex flex-row text-center w-full justify-center space-x-2">
-          <p className="text-2xl text-white text-center font-bold pt-5">Head over to</p>
-          <p className="text-2xl text-gray-900 text-center font-bold pt-5">My Teams</p>
-          <p className="text-2xl text-white text-center font-bold pt-5">to create yours right now</p>
+          <p className="sm:text-lg lg:text-xl text-white text-center font-bold pt-5">Head over to</p>
+          <p className="sm:text-lg lg:text-xl text-gray-900 text-center font-bold pt-5">My Teams</p>
+          <p className="sm:text-lg lg:text-xl text-white text-center font-bold pt-5">to create yours right now</p>
         </div>
         <div className="flex flex-row text-center w-full justify-center space-x-2">
-          <p className="text-2xl text-white text-center font-bold pt-5">Or check out other teams in the</p>
-          <p className="text-2xl text-gray-900 text-center font-bold pt-5">Leaderboard</p>
+          <p className="sm:text-lg lg:text-xl text-white text-center font-bold pt-5">Or check out other teams in the</p>
+          <p className="sm:text-lg lg:text-xl text-gray-900 text-center font-bold pt-5">Leaderboard</p>
         </div>
         <div className="flex flex-row text-center w-full justify-center space-x-2">
-          <p className="text-2xl text-white text-center font-bold pt-5">Have a look at the players and teams of the league in the</p>
-          <p className="text-2xl text-gray-900 text-center font-bold pt-5">Players</p>
-          <p className="text-2xl text-white text-center font-bold pt-5">Section</p>
+          <p className="sm:text-lg lg:text-xl text-white text-center font-bold pt-5">Have a look at the players and teams of the league in the</p>
+          <p className="sm:text-lg lg:text-xl text-gray-900 text-center font-bold pt-5">Players</p>
+          <p className="sm:text-lg lg:text-xl   text-white text-center font-bold pt-5">Section</p>
         </div>
-        <p className="text-4xl text-white text-center font-bold pt-10">Player spotlight</p>
-        <div className="bg-purple-900 rounded-lg border-white mt-10 p-4 flex items-center flex-shrink-0 shadow-xl">
+        <p className="sm:text-lg lg:text-2xl text-white text-center font-bold pt-3">Player spotlight</p>
+        <div className="bg-purple-900 rounded-lg border-white mt-3 p-4 flex items-center flex-shrink-0 shadow-xl">
           <div className="flex-shrink-0">
             <Image
               src={`http://127.0.0.1:8000/storage/players/${topPlayer.image}`}
@@ -66,7 +66,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="relative w-[20%] h-[60%] bg-purple-700 rounded-lg border-8 mx-10 border-white flex flex-col">
+      <div className="relative w-[20%] h-[65%] bg-purple-700 rounded-lg border-8 mx-10 border-white flex flex-col">
         <div className="relative flex items-center p-6 h-1/3 overflow-hidden rounded-t-lg">
           {tournament.logo && (
             <div className="absolute inset-0">
@@ -125,7 +125,7 @@ export default function Home() {
             />
           )}
           <div className="relative z-10 flex-grow ml-8">
-            <div className="text-4xl text-white mb-2 font-bold">{tournament.name}</div>
+            <div className="text-2xl text-white mb-2 font-bold">{tournament.name}</div>
           </div>
         </div>
         {games.length > 0 ? (
@@ -148,7 +148,6 @@ export default function Home() {
                 <p className="text-lg text-white text-center font-bold">
                   {game.results[0].score + " : " + game.results[1].score}
                 </p>
-                <p className="text-sm text-white text-center font-bold truncate">{tournament.name}</p>
                 <p className="text-sm text-white text-center truncate">{game.game_name}</p>
               </div>
               <div className="flex items-center justify-center">

@@ -3,14 +3,11 @@
 import type React from "react"
 
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
 import Navigation from "../navigation"
 import api from "axios"
 
 export default function MatchResults() {
-
   const [currentStep, setCurrentStep] = useState(1)
-
 
   const [tournaments, setTournaments] = useState([])
   const [teams, setTeams] = useState([])
@@ -36,7 +33,7 @@ export default function MatchResults() {
     const checkAdminAccess = async () => {
       try {
         const token = localStorage.getItem("userToken")
-  
+
         if (!token) {
           router.push("/login")
           return
@@ -49,7 +46,7 @@ export default function MatchResults() {
             Accept: "application/json",
           },
         })
-  
+
         if (response.ok) {
           const data = await response.json()
           if (data.is_admin) {
@@ -105,7 +102,6 @@ export default function MatchResults() {
 
     fetchTeams()
   }, [selectedTournament])
-
 
   useEffect(() => {
     if (!selectedTeam1 && !selectedTeam2) return
@@ -166,7 +162,6 @@ export default function MatchResults() {
     setTeam2Stats([])
   }
 
-
   const handleTeam1Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedTeam1(e.target.value)
   }
@@ -174,7 +169,6 @@ export default function MatchResults() {
   const handleTeam2Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedTeam2(e.target.value)
   }
-
 
   const handleTeam1StatChange = (playerId: number, field: "kills" | "deaths" | "assists", value: number) => {
     setTeam1Stats((prevStats) =>
@@ -187,7 +181,6 @@ export default function MatchResults() {
       prevStats.map((stat) => (stat.playerId === playerId ? { ...stat, [field]: value } : stat)),
     )
   }
-
 
   const nextStep = () => {
     if (currentStep === 1 && !selectedTournament) {
@@ -202,7 +195,6 @@ export default function MatchResults() {
 
     setCurrentStep((prev) => prev + 1)
   }
-
 
   const prevStep = () => {
     setCurrentStep((prev) => prev - 1)
@@ -229,17 +221,14 @@ export default function MatchResults() {
     }
     console.log(matchData)
     try {
-      const response = await api.post(
-        "http://127.0.0.1:8000/api/createResults",
-        matchData,
-        {
-          headers: {"Content-Type": "application/json"},
-        }
-      );
+      const response = await api.post("http://127.0.0.1:8000/api/createResults", matchData, {
+        headers: { "Content-Type": "application/json" },
+      })
     } catch (error) {
-      console.error("Error submitting match results:", error);
+      console.error("Error submitting match results:", error)
     } finally {
-      setLoading(false);
+      setLoading(false)
+      router.push("/home")
     }
   }
 
@@ -251,12 +240,11 @@ export default function MatchResults() {
     )
   }
   return (
-    <div className="relative min-h-screen w-full bg-purple-900">
+    <div className="relative min-h-screen w-full bg-gray-900">
       <Navigation />
 
-      <div className="container mx-auto py-10 px-4">
+      <div className="container mx-auto pt-10 px-4">
         <div className="max-w-3xl mx-auto bg-purple-500 p-8 rounded-lg shadow-2xl">
-
           <h1 className="text-2xl font-bold text-white mb-6 text-center">Match Results Entry</h1>
 
           <div className="flex justify-between mb-8">
@@ -271,18 +259,14 @@ export default function MatchResults() {
             </div>
           </div>
 
-
-{/* FIRST STEP */}
-
+          {/* FIRST STEP */}
 
           <form onSubmit={handleSubmit}>
             {currentStep === 1 && (
               <div className="space-y-4">
                 <div className="flex flex-row gap-4">
                   <div className="flex-1">
-                    <label className="text-white mb-2 block">
-                      Select Tournament
-                    </label>
+                    <label className="text-white mb-2 block">Select Tournament</label>
                     <select
                       id="tournament"
                       value={selectedTournament}
@@ -301,9 +285,7 @@ export default function MatchResults() {
                   </div>
 
                   <div className="flex-1">
-                    <label className="text-white mb-2 block">
-                      Game Name
-                    </label>
+                    <label className="text-white mb-2 block">Game Name</label>
                     <input
                       id="gameName"
                       type="text"
@@ -336,10 +318,7 @@ export default function MatchResults() {
               </div>
             )}
 
-
-{/* SECOND STEP */}
-
-
+            {/* SECOND STEP */}
 
             {currentStep === 2 && (
               <div className="space-y-4">
@@ -413,145 +392,139 @@ export default function MatchResults() {
               </div>
             )}
 
-
-
-  {/* LAST STEP */}
-
-
+            {/* LAST STEP */}
 
             {currentStep === 3 && (
-              <div>
+              <div className="flex flex-col h-[500px]">
                 {loadingPlayers ? (
-                  <div className="flex items-center justify-center mt-4">
+                  <div className="flex items-center justify-center flex-1">
                     <span className="ml-2 text-white">Loading players...</span>
                   </div>
                 ) : (
                   <>
-                    <div className="mb-6">
-                      <div className="flex flex-row space-x-2">
-                        <h3 className="text-xl font-semibold text-white mb-4">
-                          {teams.find((t) => t.id.toString() === selectedTeam1)?.name || "Team 1"} 
-                        </h3>
-                        <input
-                          type="number"
-                          min="0"
-                          value={team1Score}
-                          onChange={(e) =>
-                            setTeam1Score(e.target.value)
-                          }
-                          className="h-10 rounded p-2 text-zinc-950 mb-4"
-                          required
-                        />
-                      </div>
-                      <div className="bg-purple-600 p-4 rounded-lg shadow-2xl">
-                        <div className="grid grid-cols-4 gap-2 font-bold text-white mb-2 text-center">
-                          <div>Player</div>
-                          <div>Kills</div>
-                          <div>Deaths</div>
-                          <div>Assists</div>
+                    <div className="flex-1 overflow-y-auto pr-2 space-y-6">
+                      <div>
+                        <div className="flex flex-row space-x-2">
+                          <h3 className="text-xl font-semibold text-white mb-4">
+                            {teams.find((t) => t.id.toString() === selectedTeam1)?.name || "Team 1"}
+                          </h3>
+                          <input
+                            type="number"
+                            min="0"
+                            value={team1Score}
+                            onChange={(e) => setTeam1Score(e.target.value)}
+                            className="h-10 rounded p-2 text-zinc-950 mb-4"
+                            required
+                          />
                         </div>
-                        {team1Stats.map((stat) => (
-                          <div key={stat.playerId} className="grid grid-cols-4 gap-2 mb-2">
-                            <div className="text-white self-center">{stat.playerName}</div>
-                            <input
-                              type="number"
-                              min="0"
-                              value={stat.kills}
-                              onChange={(e) =>
-                                handleTeam1StatChange(stat.playerId, "kills", Number.parseInt(e.target.value) || 0)
-                              }
-                              className="h-10 rounded p-2 text-zinc-950"
-                              required
-                            />
-                            <input
-                              type="number"
-                              min="0"
-                              value={stat.deaths}
-                              onChange={(e) =>
-                                handleTeam1StatChange(stat.playerId, "deaths", Number.parseInt(e.target.value) || 0)
-                              }
-                              className="h-10 rounded p-2 text-zinc-950"
-                              required
-                            />
-                            <input
-                              type="number"
-                              min="0"
-                              value={stat.assists}
-                              onChange={(e) =>
-                                handleTeam1StatChange(stat.playerId, "assists", Number.parseInt(e.target.value) || 0)
-                              }
-                              className="h-10 rounded p-2 text-zinc-950"
-                              required
-                            />
+                        <div className="bg-purple-600 p-4 rounded-lg shadow-2xl">
+                          <div className="grid grid-cols-4 gap-2 font-bold text-white mb-2 text-center">
+                            <div>Player</div>
+                            <div>Kills</div>
+                            <div>Deaths</div>
+                            <div>Assists</div>
                           </div>
-                        ))}
+                          {team1Stats.map((stat) => (
+                            <div key={stat.playerId} className="grid grid-cols-4 gap-2 mb-2">
+                              <div className="text-white self-center">{stat.playerName}</div>
+                              <input
+                                type="number"
+                                min="0"
+                                value={stat.kills}
+                                onChange={(e) =>
+                                  handleTeam1StatChange(stat.playerId, "kills", Number.parseInt(e.target.value) || 0)
+                                }
+                                className="h-10 rounded p-2 text-zinc-950"
+                                required
+                              />
+                              <input
+                                type="number"
+                                min="0"
+                                value={stat.deaths}
+                                onChange={(e) =>
+                                  handleTeam1StatChange(stat.playerId, "deaths", Number.parseInt(e.target.value) || 0)
+                                }
+                                className="h-10 rounded p-2 text-zinc-950"
+                                required
+                              />
+                              <input
+                                type="number"
+                                min="0"
+                                value={stat.assists}
+                                onChange={(e) =>
+                                  handleTeam1StatChange(stat.playerId, "assists", Number.parseInt(e.target.value) || 0)
+                                }
+                                className="h-10 rounded p-2 text-zinc-950"
+                                required
+                              />
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="mb-6">
-                      <div className="flex flex-row space-x-2">
-                        <h3 className="text-xl font-semibold text-white mb-4">
-                          {teams.find((t) => t.id.toString() === selectedTeam2)?.name || "Team 2"}
-                        </h3>
-                        <input
-                          type="number"
-                          min="0"
-                          value={team2Score}
-                          onChange={(e) =>
-                            setTeam2Score(e.target.value)
-                          }
-                          className="h-10 rounded p-2 text-zinc-950 mb-4"
-                          required
-                        />                        
-                      </div>
-                      <div className="bg-purple-600 p-4 rounded-lg shadow-2xl">
-                        <div className="grid grid-cols-4 gap-2 font-bold text-white mb-2 text-center">
-                          <div>Player</div>
-                          <div>Kills</div>
-                          <div>Deaths</div>
-                          <div>Assists</div>
+                      <div>
+                        <div className="flex flex-row space-x-2">
+                          <h3 className="text-xl font-semibold text-white mb-4">
+                            {teams.find((t) => t.id.toString() === selectedTeam2)?.name || "Team 2"}
+                          </h3>
+                          <input
+                            type="number"
+                            min="0"
+                            value={team2Score}
+                            onChange={(e) => setTeam2Score(e.target.value)}
+                            className="h-10 rounded p-2 text-zinc-950 mb-4"
+                            required
+                          />
                         </div>
-                        {team2Stats.map((stat) => (
-                          <div key={stat.playerId} className="grid grid-cols-4 gap-2 mb-2">
-                            <div className="text-white self-center">{stat.playerName}</div>
-                            <input
-                              type="number"
-                              min="0"
-                              value={stat.kills}
-                              onChange={(e) =>
-                                handleTeam2StatChange(stat.playerId, "kills", Number.parseInt(e.target.value) || 0)
-                              }
-                              className="h-10 rounded p-2 text-zinc-950"
-                              required
-                            />
-                            <input
-                              type="number"
-                              min="0"
-                              value={stat.deaths}
-                              onChange={(e) =>
-                                handleTeam2StatChange(stat.playerId, "deaths", Number.parseInt(e.target.value) || 0)
-                              }
-                              className="h-10 rounded p-2 text-zinc-950"
-                              required
-                            />
-                            <input
-                              type="number"
-                              min="0"
-                              value={stat.assists}
-                              onChange={(e) =>
-                                handleTeam2StatChange(stat.playerId, "assists", Number.parseInt(e.target.value) || 0)
-                              }
-                              className="h-10 rounded p-2 text-zinc-950"
-                              required
-                            />
+                        <div className="bg-purple-600 p-4 rounded-lg shadow-2xl">
+                          <div className="grid grid-cols-4 gap-2 font-bold text-white mb-2 text-center">
+                            <div>Player</div>
+                            <div>Kills</div>
+                            <div>Deaths</div>
+                            <div>Assists</div>
                           </div>
-                        ))}
+                          {team2Stats.map((stat) => (
+                            <div key={stat.playerId} className="grid grid-cols-4 gap-2 mb-2">
+                              <div className="text-white self-center">{stat.playerName}</div>
+                              <input
+                                type="number"
+                                min="0"
+                                value={stat.kills}
+                                onChange={(e) =>
+                                  handleTeam2StatChange(stat.playerId, "kills", Number.parseInt(e.target.value) || 0)
+                                }
+                                className="h-10 rounded p-2 text-zinc-950"
+                                required
+                              />
+                              <input
+                                type="number"
+                                min="0"
+                                value={stat.deaths}
+                                onChange={(e) =>
+                                  handleTeam2StatChange(stat.playerId, "deaths", Number.parseInt(e.target.value) || 0)
+                                }
+                                className="h-10 rounded p-2 text-zinc-950"
+                                required
+                              />
+                              <input
+                                type="number"
+                                min="0"
+                                value={stat.assists}
+                                onChange={(e) =>
+                                  handleTeam2StatChange(stat.playerId, "assists", Number.parseInt(e.target.value) || 0)
+                                }
+                                className="h-10 rounded p-2 text-zinc-950"
+                                required
+                              />
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </>
                 )}
 
-                <div className="flex justify-between mt-6">
+                <div className="flex justify-between mt-6 pt-4 border-t border-purple-400">
                   <button
                     type="button"
                     onClick={prevStep}

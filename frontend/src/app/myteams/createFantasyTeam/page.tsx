@@ -128,7 +128,7 @@ export default function FantasyTeamId() {
                           fill
                           sizes="100%"
                           style={{
-                            objectFit: "cover",
+                            objectFit: "contain",
                             objectPosition: "center",
                           }}
                           className="opacity-30"
@@ -156,20 +156,19 @@ export default function FantasyTeamId() {
                         <Image
                           src={teamPlayers[index].logo || "/user.png"}
                           alt="Player"
-                          width={160}
-                          height={160}
+                          width={100}
+                          height={100}
                           style={{ objectFit: "contain" }}
-                          className="rounded-full mb-2"
                         />
-                        <p className="text-2xl text-white text-center pt-2">{teamPlayers[index].in_game_name}</p>
+                        <p className="text-xl text-white text-center">{teamPlayers[index].in_game_name}</p>
                       </>
                     ) : (
                       <>
                         <Image
                           src="/user.png"
                           alt="Player"
-                          width={160}
-                          height={160}
+                          width={100}
+                          height={100}
                           style={{ objectFit: "contain" }}
                           className="rounded-full mb-2 opacity-80"
                         />
@@ -233,9 +232,9 @@ export default function FantasyTeamId() {
                       width={100}
                       height={100}
                       style={{ objectFit: "contain" }}
-                      className="rounded-full border-4 border-white"
+                      className="rounded-full border-4 border-transparent"
                     />
-                    <p className="text-lg text-white text-center">{player.in_game_name}</p>
+                    <p className="text-m text-white text-center">{player.in_game_name}</p>
                   </div>
                 ))
               ) : (

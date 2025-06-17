@@ -148,7 +148,7 @@ export default function CreateTournament() {
       })
 
       alert("Tournament created successfully!")
-      router.push("/home")
+      router.push("/tournaments")
     } catch (err: any) {
       console.error("Tournament creation failed:", err)
       setError(err.response?.data?.message || err.message)

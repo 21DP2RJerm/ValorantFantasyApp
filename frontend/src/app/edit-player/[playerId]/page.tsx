@@ -116,6 +116,7 @@ export default function EditTeam() {
       console.log("Raw Response:", text) 
 
       alert("Player updated successfully!")
+      router.push(`/player/${playerId}`)
     } catch (error) {
       console.error("Error:", error)
       alert("Failed to update player.")

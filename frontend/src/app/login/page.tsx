@@ -54,13 +54,13 @@ export default function Login() {
 
             <form className="flex flex-col items-center z-1 relative bg-purple-500 p-10 rounded-lg "onSubmit={handleLogin}>
                 <Image
-                        alt="Logo"
-                        width={100}
-                        height={100}
-                        src="/logo.png"
-                        style={{ objectFit: "contain" }}
-                        className="z-0"
-                        priority
+                  alt="Logo"
+                  width={100}
+                  height={100}
+                  src="/logo.png"
+                  style={{ objectFit: "contain" }}
+                  className="z-0"
+                  priority
                 />
                 <input
                     type="email"

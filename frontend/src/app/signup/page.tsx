@@ -63,16 +63,7 @@ export default function Login() {
                 className="z-0"
                 priority
             />
-            <Image
-                alt="Breach"
-                width={1000}
-                height={100}
-                src="/breach.webp"
-                style={{ objectFit: "contain" }}
-                className="z-0 absolute left-[10%] "
-                priority
-            />
-            <form className="flex flex-col items-center z-1 w-[20%] bg-purple-500 p-10 rounded-lg absolute right-[30%]" onSubmit={handleRegister}>
+            <form className="flex flex-col items-center z-1 w-[20%] bg-purple-500 p-10 rounded-lg relative " onSubmit={handleRegister}>
 
                 <Image
                         alt="Logo"
