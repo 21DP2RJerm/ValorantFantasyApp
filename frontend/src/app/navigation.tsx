@@ -61,7 +61,7 @@ export default function Navigation() {
   }
 
   return (
-    <div className="absolute bg-purple-900 flex-col h-screen w-[15%] left-0 flex justify-center items-center border-r-8 border-white">
+    <div className="absolute bg-purple-900 flex-col h-screen w-[15%] left-0 flex justify-start items-center border-r-8 border-white">
       <Image
         alt="Logo"
         width={200}
