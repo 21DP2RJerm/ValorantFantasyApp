@@ -93,13 +93,11 @@ export default function MatchResults() {
       setLoadingTeams(true)
       try {
         const response = await fetch(`http://127.0.0.1:8000/api/tournamentTeams/${selectedTournament}`)
-        if (!response.ok) throw new Error("Failed to fetch teams")
         const data = await response.json()
         console.log(data)
         setTeams(data)
       } catch (error) {
         console.error("Error fetching teams:", error)
-        setError("Failed to load teams")
       } finally {
         setLoadingTeams(false)
       }
@@ -118,7 +116,6 @@ export default function MatchResults() {
       try {
         if (selectedTeam1) {
           const response1 = await fetch(`http://127.0.0.1:8000/api/getTeamInfo/${selectedTeam1}`)
-          if (!response1.ok) throw new Error("Failed to fetch team 1 players")
           const data1 = await response1.json()
           setTeam1Players(data1.players)
 
@@ -135,7 +132,6 @@ export default function MatchResults() {
 
         if (selectedTeam2) {
           const response2 = await fetch(`http://127.0.0.1:8000/api/getTeamInfo/${selectedTeam2}`)
-          if (!response2.ok) throw new Error("Failed to fetch team 2 players")
           const data2 = await response2.json()
           setTeam2Players(data2.players)
 
@@ -151,7 +147,6 @@ export default function MatchResults() {
         }
       } catch (error) {
         console.error("Error fetching players:", error)
-        setError("Failed to load players")
       } finally {
         setLoadingPlayers(false)
       }
@@ -241,11 +236,8 @@ export default function MatchResults() {
           headers: {"Content-Type": "application/json"},
         }
       );
-    
-      setError("Match results submitted successfully!");
     } catch (error) {
       console.error("Error submitting match results:", error);
-      setError("Failed to submit match results");
     } finally {
       setLoading(false);
     }

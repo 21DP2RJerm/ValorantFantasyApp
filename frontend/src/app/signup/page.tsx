@@ -54,9 +54,7 @@ export default function Login() {
 
     return (
         <div className="relative flex justify-center items-center h-screen w-screen space ">
-        {error && (
-            <div className="bg-red-100 border relative text-center border-red-400 text-red-700 px-4 py-3 rounded mb-4 w-[50%]">{error}</div>
-          )}
+
             <Image
                 alt="Background"
                 fill={true}
@@ -85,7 +83,9 @@ export default function Login() {
                         className="z-0"
                         priority
                 />
-                 {error && <p className="text-red-500 mt-4">{error}</p>}
+                  {error && (
+                    <div className="bg-red-100 border relative text-center border-red-400 text-red-700 px-4 py-3 rounded mb-4 w-[100%]">{error}</div>
+                  )}
                 <input
                     type="username"
                     name="name"

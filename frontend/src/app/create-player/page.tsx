@@ -41,11 +41,6 @@ export default function CreateTeam() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!playerName || !playerLastName || !playerIGN || !playerTeam || !playerLogo) {
-      setError("Please fill all fields!")
-      return
-    }
-
     setLoading(true)
 
     const formData = new FormData()
